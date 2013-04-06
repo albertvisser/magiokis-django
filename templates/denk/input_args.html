@@ -1,0 +1,27 @@
+{% extends "denk/base_site.html" %}
+{% block extrahead %}<script type="text/javascript">
+function check(o)
+{
+    var s = o.value.replace( /\s/, '').replace( /\s/, '');
+    if ((s.length==0) || (s==null)) {
+        alert('Je moet wel wat invullen');
+        o.focus();
+        return false;
+    }
+    return true;
+}
+</script>{% endblock %}
+{% block content-data %}
+<h3>{{ subtitle}}</h3>
+<form action="{{ next }}" ><br>
+<input type="text" name="txtInput" size="20" />
+<input type="submit" value=" {{ subtext }} "method="post" onclick='javascript:return(check(form.txtInput))'>
+<br /><br />
+</form>
+{% if rest %}
+<br/>
+bestaande trefwoorden:<br/>
+<select readonly="readonly" size=12>{% for x in rest %}<option>{{x}}</option>{%endfor%}</select>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,22 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+<h3>Lijst registraties van soort: {{serienaam}}</h3>
+{% if melding %}<h3>{{melding}}</h3>{% endif %}
+<hr style="height: 3px"/>
+{%if reglist %}
+<table width=100%>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Titel</th>
+        <th>Beschrijving</th>
+    </tr>
+    {% for reg in reglist %}
+    <tr>
+        <td><a href="/{{reg.url}}/">[{{play}}]</a></td>
+        <td valign="top"><a href="/songs/reg/{{reg.id}}">{{reg.song}}</a></td>
+        <td>{{reg.commentaar}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{%endblock%}

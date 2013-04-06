@@ -1,0 +1,47 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+Kies een 
+<form style="display: inline" action="/songs/select/letter/" method="post">
+<select name="select" onchange="form.submit()">
+<option value="">letter</option>
+{% for letter in letterlijst %}<option value="{{letter}}"> {{letter}} </option>{% endfor %}
+</select>
+</form> 
+of 
+<form  style="display: inline" action="/songs/select/jaar/" method="post">
+<select name="select" onchange="form.submit()">
+<option value="">jaartal</option>
+{% for jaar in jarenlijst %}<option value="{{jaar}}"> {{jaar}} </option>{% endfor %}
+</select>
+</form>
+om een selectie van songs te bekijken<br/>
+of zoek direct op (deel van) titel:
+<form style="display: inline" action="/songs/select/search/" method="post">
+    <input type="text" name="select" size="30" maxlength="80" />
+    <input type="submit" value="Zoek">
+</form>
+<hr/>
+<!--
+<span id="rightless">
+&nbsp;<br />
+</span>
+-->
+{% if soort %}
+<!-- <h3>lijst songs {{lijstoms}}</h3> -->
+{% if songslijst %}
+<table>
+<thead>
+<tr><th colspan=3 align="center">Klik op een titel om detailgegevens en de tekst te bekijken</th></tr>
+<tr>
+<th align="left">Titel</th><th align="left">Datering</th>
+<th align="left">Beschrijving</th></tr></thead>
+{% for song in songslijst %}
+<tr><td valign="top"><a href="/songs/detail/{{song.id}}/">{{song.titel}}</a></td>
+<td valign="top">{{song.datering}}</td><td>{{song.commentaar}}</td></tr>
+{% endfor %}
+</table>
+{% else %}
+<h4>Geen gegevens gevonden</h4>
+{% endif %}
+{% endif %}
+{%endblock%}

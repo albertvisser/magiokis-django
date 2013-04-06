@@ -1,0 +1,29 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+<form action="/songs/select/series/" method="post">
+Kies een verzameling:
+<select name="select" onchange="form.submit()">
+<option value="">--- kies ---</option>
+{% for serie in series %}
+<option value="{{serie.id}}">{{serie.name}}</option>
+{% endfor %}
+</select>
+</form>
+{% if melding %}<h3>{{melding}}</h3>{% endif %}
+{% if comment %} <span>{{comment}}</span> {% endif %}
+<hr style="height: 3px"/>
+<span id="right2">
+{% if songs %}
+<h3>Lijst met songs in verzameling "{{serienaam}}"</h3>
+<table width=100%>
+    <tr><th>Titel</th><th>Beschrijving</th></tr>
+    {% for song in songs %}
+    <tr>
+        <td><a href="/songs/detail/{{song.song.id}}">{{song.song}}</a></td>
+        <td>{{song.comment}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</span>
+{%endblock%}

@@ -1,0 +1,20 @@
+{% extends "base_site.html" %}
+{% load i18n %}
+{% block style %} <link rel="stylesheet" type="text/css" href="/media/admin/css/base.css" /> {% endblock %}
+{% block extrahead %}{% endblock %}
+{% block title %} Magiokis! Denk | {{ title|escape }} {% endblock %}
+{% block branding %}<h1 id="site-name">{{branding|escape}}{% trans 'Magiokis! Denk ' %} | {{ title|escape }}</h1>{% endblock %}
+{% block nav-global %}{{menu}} {% endblock %}
+{% block breadcrumbs %}
+{% for x in crumbs %}
+&rsaquo; <a href="{{x.0}}" title="{{x.2}}">{{x.1}}</a>
+{% endfor %}
+{% endblock %}
+{% block content_title %} {% endblock %}
+{% block content %}
+  <hr/>
+  {% block content-data %} {{ content }} {% endblock %}
+  <hr/>
+  <p style="color: red">{{ message }}</p>
+{% endblock %}
+

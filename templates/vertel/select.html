@@ -1,0 +1,32 @@
+{% extends "vertel/base_site.html" %}
+{% block content-data %}
+{% if cats %}
+<form id="frmsel" action="/vertel/select/cat/sel/" method="post">
+<br/>Kies een categorie:
+<select name="lbSelCat" size="1">
+{% for x in cats %}<option value="{{x.id}}">{{x}}</option>{% endfor %}</select>
+<!-- <input type="hidden" name="hUser" id="hUserS" value="%s"> -->
+<input type="submit" value=" Selectie uitvoeren ">
+</form>
+{% endif %}
+{% if zoek %}
+<form id="frmzoek" action="/vertel/select/zoek/" method="post">
+<br/>Zoeken op (deel van) titel:
+<input type="text" name="txtZoek" id="txtZoek" size="40" maxlength="80" value="{{zoek}}"/></li>
+<!-- <input type="hidden" name="hUser" id="hUserS" value="%s"> -->
+<input type="submit" value=" Selectie uitvoeren ">
+</form>
+{% endif %}
+{% if aantal %}
+<br/>{{ aantal }}<br/><br/>
+<ul>
+{% for x in items %}
+<li>{{x}}
+    <a href="/vertel/detail/{{x.id}}/{{rubr}}/{{data}}/lees" title="toon tekst">[lees]</a>
+    <a href="/vertel/detail/{{x.id}}/{{rubr}}/{{data}}/" title="edit tekst">[wijzig]</a></li>
+{% endfor %}
+</ul><!-- <input type="hidden" name="hVan" value="%s"> -->
+<!-- <input type="hidden" name="hUser" id="hUserC" value="%s"> -->
+<a href="{{nieuw}}" title=""><input type="button" value=" Nieuwe tekst opvoeren {{bij}} "/></a>
+{% endif %}
+{% endblock %}

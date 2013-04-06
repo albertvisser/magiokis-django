@@ -1,0 +1,44 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+ <h4>{{melding}}</h4>
+ <form action="/songs/reg/{{reg.id}}/update/" method="post">
+ <table width="800" border="0"><tr><td>
+  <table width="100%">
+   <tr>
+    <td colspan="4">
+     <a name="details">Details van registratie:</a>
+     <input type="hidden" name="song" value="{{reg.song}}"/>
+     <input type="hidden"name="opname" value ="{{reg.id}}"/>
+     </td>
+    </tr>
+    <tr>
+     <td><label for="Song">Song:</label></td>
+     <td colspan="3">
+       <select name="Song">{% for sng in songs %}
+       <option {% if sng.id == reg.song.id %}selected="selected"{% endif %}
+       value="{{sng.id}}">{{sng.titel}}</option>
+       {% endfor %}</select>
+     </td>
+    </tr>
+    <tr>
+     <td><label for="Soort">Soort registratie:</label></td>
+     <td colspan="3">
+      <select name="Soort">{% for typ in types %}
+      <option {% if typ.id == reg.type.id %}selected="selected"{% endif %}
+      value="{{typ.id}}">{{typ.naam}}</option>
+      {% endfor %}</select>
+     </td>
+    </tr>
+    <tr><td><label for="Url">Filenaam:</label></td>
+    <td colspan=3>
+     <input type="text" name="Url" size="60" maxlength="80" value = "{{reg.url}}">
+    </td></tr>
+   <tr><td><label for="Opm">Opmerkingen :</label></td>
+    <td colspan=3>
+     <textarea name="Opm"  cols="60" rows="5">{{reg.commentaar}}</textarea>
+    </td></tr>
+  </table>
+  <input type="submit" name="update" value = "Wijzigen">
+ </td></tr></table>
+ </form>
+{%endblock%}

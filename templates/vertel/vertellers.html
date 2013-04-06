@@ -1,0 +1,9 @@
+{% extends "magiokis/base_site.html" %}
+{% block content-data %}
+<table>
+<tr><th>voornaam</th><th>achternaam</th><th>evt. pseudoniem</th></tr>
+{% for naam,achter,pseudo in verteller_lijst %}
+    <tr><td>{{ naam }}</td><td>{{ achter }}</td><td>{{ pseudo }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

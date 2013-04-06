@@ -1,0 +1,53 @@
+{% extends "vertel/base_site.html" %}
+{% block extrahead %}
+<script type="text/javascript">
+function check(o) {
+    var s = o.value.replace( /\s/, '').replace( /\s/, '');
+    if ((s.length==0) || (s==null)) {
+        alert('Je moet wel wat invullen');
+        o.focus();
+        return false;
+    }
+    return true;
+}
+function val() {
+    var r = true;
+    var s = document.getElementById('rbselZ');
+    if (s.checked == true) {
+        r = check(document.getElementById('txtZoek'));
+    }
+    else {
+        var s = document.getElementById('rbselC');
+        if (s.checked == true) {
+            r = check(document.getElementById('txtNwecat'));
+        }
+    }
+    return r;
+}
+</script>
+{% endblock %}
+{% block content-data %}
+<form action="/vertel/doe/" method="post">
+<ol>
+  <!-- <li>Geef verteller naam op:
+  <input type="text" name="txtUser" id="txtUser" %s />
+  <br/>
+  <br/>
+  </li> -->
+  <li>Kies iets om te doen:<br/>
+    <ul>
+    <li style="list-style-type: none"><input type="radio" name="rbsel" value="selCat" checked="checked"/> Toon alle teksten van een categorie</li>
+    <li style="list-style-type: none"><input type="radio" name="rbsel" id = 'rbselZ' value="selZoek"/> Zoeken op (deel van) titel:<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="txtZoek" id="txtZoek" size="40" maxlength="80"/></li>
+    <li style="list-style-type: none"><input type="radio" name="rbsel" value="nweTekst"/> Nieuwe tekst maken</li>
+    <li style="list-style-type: none"><input type="radio" name="rbsel" id = 'rbselC' value="nweCat"/> Nieuwe categorie opvoeren:<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="txtNweCat" id="txtNweCat" size="40" maxlength="40"/></li>
+    </ul>
+  <br/>
+  </li>
+  <li>klik op
+  <input type="submit" id="pbSubmit" value="  Uitvoeren  "  onclick="return val()"/>
+  </li>
+</ol>
+</form>
+{% endblock %}

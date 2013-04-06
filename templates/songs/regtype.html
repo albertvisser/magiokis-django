@@ -1,0 +1,56 @@
+{% extends "songs/base_site.html" %}
+{% block extrahead %}<script type="" type="text/javascript">
+// functie om de bijbehorende submit- en cancel-knop te enablen
+function enable(x) {
+    document.getElementById("pbSub"+x).disabled = false ;
+    document.getElementById("pbCan"+x).disabled = false ;
+}
+</script>{% endblock %}
+{% block content-data %}
+{% if melding %}{{melding}}{% endif %}
+{% if tabel %}
+<table>
+ <tr><th>Naam / Pad / HTMLpad<br/>Player / Editor</th></tr>
+ {% for item in tabel %}
+  <form action="/songs/tabel/{{tabsoort}}/{{item.id}}/update/" method="post">
+  <tr><td>
+    <input type="text" name="txtNaam" size="20" maxlength="20" 
+        value="{{item.naam}}" onchange="enable('{{item.id}}')"/></span>
+    <input type="text" name="txtPad" size="40" maxlength="40"
+        value="{{item.pad}}" onchange="enable('{{item.id}}')"/></span>
+    <input type="text" name="txtHTMLPad" size="40" maxlength="40"
+        value="{{item.htmlpad}}" onchange="enable('{{item.id}}')"/></span>
+  <br/>
+    <input type="text" name="txtPlayer" size="60" maxlength="60" 
+        value="{{item.player}}" onchange="enable('{{item.id}}')"/></span>
+    <input type="text" name="txtEditor" size="60" maxlength="60"
+        value="{{item.editor}}" onchange="enable('{{item.id}}')"/></span>
+  <br/>
+    <input type="submit" id="pbSub{{item.id}}" value="aanpassen" disabled="disabled"/>
+    <input type="button" id="pbCan{{item.id}}" value="terugzetten" disabled="disabled"
+        onclick="form.reset()"/>
+  </td></tr>
+  </form>
+  {% endfor %}
+  <form action="/songs/tabel/{{tabsoort}}/add/" method="post">
+  <tr><td>
+    <input type="text" name="txtNaam" size="20" maxlength="20" 
+        value="" onchange="enable('0')"/></span>
+    <input type="text" name="txtPad" size="40" maxlength="40"
+        value="" onchange="enable('0')"/></span>
+    <input type="text" name="txtHTMLPad" size="40" maxlength="40"
+        value="" onchange="enable('0')"/></span>
+  <br/>
+    <input type="text" name="txtPlayer" size="60" maxlength="60" 
+        value="" onchange="enable('0')"/></span>
+    <input type="text" name="txtEditor" size="60" maxlength="60"
+        value="" onchange="enable('0')"/></span>
+  <br/>
+    <input type="submit" id="pbSub0" value="opvoeren" disabled="disabled"/>
+    <input type="button" id="pbCan0" value="terugzetten" disabled="disabled"
+        onclick="form.reset()"/>
+  </td></tr>
+  </form>
+</table>
+{% endif %}
+{%endblock%}

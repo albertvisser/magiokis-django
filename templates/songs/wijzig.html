@@ -1,0 +1,33 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+ <form action="/songs/detail/{{song.id}}/update/" method="post">
+ <table width="800px" border="0"><tr><td>
+  <table width="100%">
+   <tr><td colspan=2><a name="details">Details van song:</a>
+    <input type="hidden" name="song" value ="{{song.id}}"></td></tr>
+   <tr><td><label for="Titel">Titel:</label></td>
+    <td><input type="text" value="{{song.titel}}" name="Titel" size="60" maxlength="80">
+    </td></tr>
+   <tr><td width="15%"><label for="Tekst">Tekst van:</label></td>
+    <td width="85%"><select name="Tekst">{% for aut in auteurs %}
+     <option {% if aut.id == song.tekst.id %} selected="selected" {% endif %}
+     value="{{aut.id}}">{{aut.naam}}</option>{% endfor %}
+   </select></td></tr>
+   <tr><td><label for="Muziek">Muziek van:</label></td>
+    <td><select name="Muziek">{% for mkr in makers %}
+     <option {% if mkr.id == song.muziek.id %} selected="selected" {% endif %}
+     value="{{mkr.id}}">{{mkr.naam}}</option>{% endfor %}
+   </select></td></tr>
+   <tr><td><label for="Datering">Datering (t.b.v. sortering):</label></td>
+    <td><input type="text" value="{{song.datering}}" name="Datering" size="60" maxlength="40"></td></tr>
+   <tr><td><label for="Datumtxt">Datering (t.b.v. presentatie):</label></td>
+    <td><input type="text" value="{{song.datumtekst}}" name="Datumtxt" size="60" maxlength="40"></td></tr>
+   <tr><td><label for="Opmerkingen">Opmerkingen :</label></td>
+    <td colspan=3>
+    <textarea name="Opmerkingen" cols="80" rows="3">{{song.commentaar}}</textarea></td></tr>
+  </table>
+  <input type="submit" name="update" value = "Wijzigen"></td></tr>
+ </table>
+ </form>
+ <h4>{{ahem}}</h4>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "vertel/base_site.html" %}
+{% block extrahead %}
+<script type="text/javascript">
+function checkV() {
+// functie om een submit knop pas actief te maken als alle in te vullen velden ingevuld zijn
+    var b = false;
+    tv = document.getElementById('txtTitelV').value;
+    sv = document.getElementById('lbSelCat').value;
+    if ((tv == '') || (sv == '')) {
+        b = true;
+    }
+    document.getElementById("pbUpdateV").disabled = b;
+}
+function checkH() {
+// functie om een submit knop pas actief te maken als alle in te vullen velden ingevuld zijn
+    var b = false;
+//    tv = document.getElementById('txtTitelH').value;
+    hv = document.getElementById('txtHoofdstuk').value;
+//    if ((tv == '') || (hv == '')) {
+    if (hv == '') {
+        b = true;
+    }
+    document.getElementById("pbUpdateH").disabled = b;
+}
+</script>
+{% endblock %}
+{% block content-data %}
+<form name="frmWijzigVerhaal" action="/vertel/detail/{{verhaal.id|default:"0"}}/wijzig/" method="post">
+<table border="0">
+<tr>
+    <td>verhaal titel: </td>
+    <td>
+        <input type="text" name="txtTitel" id="txtTitelV" value="{{verhaal.titel}}{{nwe_titel}}" size="60" maxlength="80" onkeyup="checkV()"/>
+        <!-- <input type="hidden" name="hUser" value="{{verteller}}"/>  -->
+        <input type="hidden" name="hId" value="{{verhaal.id}}"/>
+        <!-- <input type="hidden" name="hHs" value="{{hst.id}}"/> -->
+        <input type="hidden" name="hCat" value="{{cat}}"/>
+    </td>
+</tr>
+<tr>
+    <td>categorie:</td>
+    <td>
+        <select name="lbSelCat" id="lbSelCat" size="1" onchange="checkV()">
+            <option value="">-- kies een categorie --</option>
+            {% for x in cats %}
+            <option {% if x.id == cat %}selected="selected"{% endif %}
+            value="{{x.id}}">{{x.titel}}</option>
+            {% endfor %}
+        </select>
+    </td>
+</tr>
+<tr>
+    <td colspan="2"><input type="submit" id="pbUpdateV" {% if not verhaal %}disabled="disabled"{% endif %}
+    value="Verhaalgegevens {%if verhaal%}wijzigen{%else%}opvoeren{%endif%}"/></td>
+</tr>
+</table>
+</form>
+{% if verhaal %}
+<form name="frmKiesHoofdstuk" action="/vertel/detail/{{verhaal.id}}/kies/" method="post">
+    <input type="hidden" name="hUserH" value="%s"/>
+    <input type="hidden" name="hselIdH" value="%s"/>
+    hoofdstukken:
+    <select name="selHoofdstuk">
+        {% for x in hslijst %}
+        <option {% if x.id == hst.id %} selected="selected" {% endif %}
+        value="{{x.id}}">{{x.titel|default:"(geen titel)"}}</option>{% endfor %}
+        <option value="0">-- nieuw hoofdstuk --</option>
+    </select>
+    <input type="submit" value="Toon hoofdstuk" />
+<!--    <a href="/vertel/detail/{{verhaal.id}}/nieuw/" title=""><input type="button" value="Nieuw hoofdstuk" /></a><br /> -->
+</form>
+<hr>
+<form name="frmWijzigHoofdstuk" action="/vertel/detail/{{verhaal.id}}/{{hst.id|default:"0"}}/wijzig/" method="post">
+    <!-- <input type="hidden" name="hUserT" value="{{verteller}}"/> -->
+    <input type="hidden" name="hselIdT" value="{{verhaal.id}}"/>
+    <input type="hidden" name="hselHs" value="{{hst.id}}"/>
+    hoofdstuk titel:
+    <input type="text" name="txtTitel2" id="txtTitelH" size="40" maxlength="80" value="{{hst.titel}}" onkeyup="checkH()">
+    <input type="submit" id="pbUpdateH" {% if not hst %}disabled="disabled"{% endif %}
+    value="Hoofdstuktitel of -tekst aanpassen"  />
+    <br><br>
+    <textarea name="txtHoofdstuk" id="txtHoofdstuk" cols="100" rows="25" onkeyup="checkH()">{{hst.inhoud}}</textarea>
+    <br><br>
+</form>
+{% endif %}
+{% endblock %}

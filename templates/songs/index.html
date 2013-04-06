@@ -1,0 +1,28 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+<ol>
+<li><a href="/songs/select/">Raadplegen/bijwerken songs</a></li>
+<li><a href="/songs/select/opnames/">Raadplegen opnameverzamelingen (cassettes)</a></li>
+<li>Raadplegen muziekregistratie-verzamelingen:
+    <ul>
+    <li><a href="/songs/select/regs/5/">bladmuziek ("muziekmap")</a></li>
+    <li><a href="/songs/select/regs/1/">vastlegging in (Octa)MED MMM0-formaat (Amiga)</a></li>
+    <li><a href="/songs/select/regs/2/">vastlegging in MOD-formaat</a></li>
+    <li><a href="/songs/select/regs/3/">vastlegging in XM-formaat</a></li>
+    <li><a href="/songs/select/regs/4/">vastlegging in MIDI formaat (met gebruik van Soundfonts)</a></li>
+    </ul>
+</li>
+<li><a href="/songs/select/series/">Raadplegen songverzamelingen</a></li>
+<li>Tabellenbeheer:
+    <ul>
+    <li><a href="/songs/tabel/Auteur/">tekst-auteurs</a></li>
+    <li><a href="/songs/tabel/Maker/">muziek-auteurs</a></li>
+    <li><a href="/songs/tabel/Datum/">opnamedata</a></li>
+    <li><a href="/songs/tabel/Plaats/">opnameplaatsen</a></li>
+    <li><a href="/songs/tabel/Bezetting/">bezettingen</a></li>
+    <li><a href="/songs/tabel/Instrument/">instrumenten</a></li>
+    <li><a href="/songs/tabel/Regtype/">muziekregistratiesoorten</a></li>
+    </ul>
+</li>
+</ol>
+{%endblock%}

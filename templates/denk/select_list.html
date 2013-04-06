@@ -1,0 +1,17 @@
+{% extends "denk/base_site.html" %}
+{% block content-data %}
+<form action="/denk/detail/" method="post">
+<br/><span class="meld">{{ subtitle }}</span><br/><br/>
+{% if selection %}
+<!--<div style="height: 400px; overflow: scroll">-->
+{% for tekst in selection %}
+<a href="/denk/detail/{{tekst.id}}/{{hier}}" title="Toon tekst">{{tekst.titel}}</a><br/>
+{% endfor %}
+<!--</div>-->
+{% endif %}
+<br />
+<input name="selopt" type="hidden" value="{{option}}"/>
+<input type="button" value="Nieuwe gedachte opvoeren" onclick="document.location='/denk/detail/nieuw'" />
+</form>
+{% endblock %}
+

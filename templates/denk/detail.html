@@ -1,0 +1,73 @@
+{% extends "denk/base_site.html" %}
+{% block extrahead %}
+<script type="text/javascript">
+function move_item(from, to)
+{
+  var f;
+  var SI; /* selected Index */
+  if(from.options.length>0)
+  {
+    for(i=0;i<from.length;i++)
+    {
+      if(from.options[i].selected)
+      {
+        SI=from.selectedIndex;
+        f=from.options[SI].index;
+        to.options[to.length]=new Option(from.options[SI].text,from.options[SI].value);
+        from.options[f]=null;
+        i--; /* make the loop go through them all */
+      }
+    }
+  }
+}
+function herbepaal(o)
+{
+  var s = o.options[0].value;
+  for (i=1;i<o.length;i++)
+    s += ("$#$" + o.options[i].value)
+  document.getElementById("txtTrefw").value = s;
+}
+</script>
+{% endblock %}
+{% block content-data %}
+<form action="{{ next }}" method="post">
+<!--Titel: --><input type="text" name="txtTitel" value="{{ titel }}" size="80" maxlength="80"><br />
+<hr />
+<input type="hidden" name="hselItem" value="{{ id }}" size="90" maxlength="80"><br />
+<input type="hidden" name="txtTrefw" id="txtTrefw" value="{{ trefw }}" size="90" maxlength="255">
+<textarea name="txtTekst" cols="90" rows="20">{{ tekst }}</textarea>
+<hr/><b>Opgeven trefwoorden bij deze tekst:</b>
+<div>
+<span style="float: left; width: 100px">
+Geselecteerd:<br/>
+<select name="lbselTrefw" multiple="multiple" size="6">
+{% for tw in trefw_in %}
+<option value="{{ tw.id }}">{{ tw.woord }}</option>
+{% endfor %}
+</select>
+</span>
+<span style="float: left; width: 150px">
+<br /><br />
+<input type="button" name="pbAdd" value=" <- toevoegen " onclick="move_item(lbselList,lbselTrefw)">
+<input type="button" name="pbDel" value=" weghalen ->  " onclick="move_item(lbselTrefw,lbselList)"/><br/>
+</span>
+<span style="float: left; width: 100px">
+Beschikbaar:<br />
+<select name="lbselList" multiple="multiple" size="6">
+{% for tw in trefw_ex %}
+<option value="{{ tw.id }}">{{ tw.woord }}</option>
+{% endfor %}
+</select>
+</span>
+<span style="float: left; width: 50px">&nbsp;<br/><br/><br/>
+</span>
+<span style="float: left; width: 150px">
+<br/>
+<input type="submit" value="Gedachte {{ actie }}" onclick="herbepaal(lbselTrefw)"/><br/>
+<a href="/denk/detail/nieuw/" title=""><input type="button" value=" {{knoptekst}} "/></a><br/>
+<a href="/denk/trefw/nieuw/{{ id|default:"0" }}/" title=""><input type="button" value=" Trefwoord opvoeren  "/></a><br/>
+</span>
+</div>
+</form>
+{% endblock %}
+

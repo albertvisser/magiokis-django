@@ -1,0 +1,28 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+<form action="/songs/tekst/{{id}}/update/" method="post">
+<table width="800px" border="0">
+  <tr>
+    <td>
+      <table width="100%">
+        <tr><td>Titel:</td>
+         <td><input type="text" name="titel" size="60" value ="{{titel}}"></td><tr>
+        <tr><td width="15%">Tekst:</td>
+         <td width="85%">
+          <textarea name="tekst" cols="80" rows="24">{{tekst|safe}}</textarea><td></tr>
+        <tr>
+          <td><label for="fnaam">Filenaam:</label> <small><small>(indien afwijkend van titel)</small></small>
+            <input type="hidden" name="song" value="{{id}}"></td>
+            <input type="hidden" name="fnaam" value="{{fn}}"></td>
+          <td>
+           <input type="text" value="{{fnaam}}" name="filenm" size="60" maxlength="40">
+          </td>
+        </tr>
+      </table>
+      <input type="submit" name="update" value="Wijzigen">
+    </td>
+  </tr>
+</table>
+<h4>{{ahem}}<h4>
+</form>
+{%endblock%}

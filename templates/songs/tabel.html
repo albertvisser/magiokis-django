@@ -1,0 +1,94 @@
+{% extends "songs/base_site.html" %}
+{% block extrahead %}<script type="" type="text/javascript">
+// functie om de bijbehorende submit- en cancel-knop te enablen
+function enable(x) {
+    newval = document.getElementById("txtNaam"+x).value;
+    oldval = document.getElementById("oldNaam"+x).value;
+    if (newval != oldval) {
+    document.getElementById("pbSub"+x).disabled = false ;
+    document.getElementById("pbCan"+x).disabled = false ;
+    }
+    else {
+    document.getElementById("pbSub"+x).disabled = true ;
+    document.getElementById("pbCan"+x).disabled = true ;
+    }
+}
+function enable2(x) {
+    newval = document.getElementById("txtWaarde"+x).value;
+    oldval = document.getElementById("oldWaarde"+x).value;
+    if (newval != oldval) {
+    document.getElementById("pbSub"+x).disabled = false ;
+    document.getElementById("pbCan"+x).disabled = false ;
+    }
+    else {
+    document.getElementById("pbSub"+x).disabled = true ;
+    document.getElementById("pbCan"+x).disabled = true ;
+    }
+}
+function restore(x) {
+    document.getElementById("txtNaam"+x).value = document.getElementById("oldNaam"+x).value;
+    document.getElementById("pbSub"+x).disabled = true ;
+    document.getElementById("pbCan"+x).disabled = true ;
+}
+function restore2(x) {
+    document.getElementById("txtWaarde"+x).value = document.getElementById("oldWaarde"+x).value;
+    document.getElementById("pbSub"+x).disabled = true ;
+    document.getElementById("pbCan"+x).disabled = true ;
+}
+</script>{% endblock %}
+{% block content-data %}
+{% if melding %}{{melding}}{% endif %}
+{% if tabel %}
+<table>
+ <tr>
+  <th>Waarde</th>
+  {% if tabwrd %}<th>{{tabwrd}}</th>{% endif %}
+  <th>&nbsp;</th>
+ </tr>
+ {% for item in tabel %}
+ <tr>
+  <form action="/songs/tabel/{{tabsoort}}/{{item.id}}/update/" method="post">
+    <td>
+    <input type="text" name="txtNaam" id="txtNaam{{item.id}}" value="{{item.naam}}"
+        onkeyup="enable('{{item.id}}')" size="40" maxlength="80"/>
+    <input type="hidden" id="oldNaam{{item.id}}" value="{{item.naam}}"
+    </td>
+    {% if tabwrd %}
+    <td>
+    <input type="text" name="txtWaarde" id="txtWaarde{{item.id}}" value="{{item.waarde}}"
+        onkeyup="enable2('{{item.id}}')" size="10" maxlength="10"/>
+    <input type="hidden" id="oldWaarde{{item.id}}" value="{{item.waarde}}"
+    </td>
+    {% endif %}
+    <td>
+    <input type="submit" id="pbSub{{item.id}}" value="aanpassen" disabled="disabled"/>
+    <input type="button" id="pbCan{{item.id}}" value="terugzetten" disabled="disabled"
+        onclick="restore('{{item.id}}'){% if tabwrd %};restore2('{{item.id}}'){% endif %}"/>
+    </td>
+  </form>
+ </tr>
+ {% endfor %}
+ <tr>
+  <form action="/songs/tabel/{{tabsoort}}/add/" method="post">
+    <td>
+    <input type="text" name="txtNaam" id="txtNaam0" value=""
+        onkeyup="enable('0')" size="40" maxlength="80"/>
+    <input type="hidden" id="oldNaam0" value=""
+    </td>
+    {% if tabwrd %}
+    <td>
+    <input type="text" name="txtWaarde" id="txtWaarde0" value=""
+        onkeyup="enable2('0')" size="10" maxlength="10"/>
+    <input type="hidden" id="oldWaarde0" value=""
+    </td>
+    {% endif %}
+    <td>
+    <input type="submit" id="pbSub0" value="opvoeren" disabled="disabled"/>
+    <input type="button" id="pbCan0" value="terugzetten" disabled="disabled"
+        onclick="restore('0'){% if tabwrd %};restore2('0'){% endif %}"/>
+    </td>
+  </form>
+ </tr>
+ </table>
+{% endif %}
+{%endblock%}
