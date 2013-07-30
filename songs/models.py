@@ -1,3 +1,4 @@
+import os
 from django.db import models
 
 class Auteur(models.Model):
@@ -63,7 +64,7 @@ class Serieitem(models.Model):
         db_table = u'serieitems'
     def __unicode__(self):
         return str(self.song)
-    
+
 class Songserie(models.Model):
     name = models.CharField(max_length=60,blank=True)
     song = models.ManyToManyField(Serieitem,related_name="serie")
@@ -134,3 +135,12 @@ class Registratie(models.Model):
         db_table = u'registraties'
     def __unicode__(self):
         return ": ".join((str(self.type),self.url))
+    def play(self):
+        if self.type == '5':
+            return 'mmap'
+        result = os.path.splitext(self.url)[1][1:].lower()
+        if self.type == '7':
+            result += '/oud'
+        return result
+
+

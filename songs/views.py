@@ -47,7 +47,7 @@ def songlist(request, melding='',soort='',data=''): # klaar
             elif data in list(string.letters):
                 soort = 'letter'
     if soort:
-        page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort,data),
+        page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort, data),
             soort,'select songs by %s' % soort))
 
     #-- songlijst met songs (id, titel, xx, yy) en lijstoms
@@ -70,6 +70,7 @@ def songlist(request, melding='',soort='',data=''): # klaar
 
     if soort and not page_data["message"]:
         page_data["soort"] = soort
+        page_data["sel"] = data
         page_data["title"] += page_data["lijstoms"]
         if songslijst.count() == 1:
             return HttpResponseRedirect("/songs/detail/{0}/".format(songslijst[0].id))
@@ -101,19 +102,25 @@ def series(request, melding='',item=''): # klaar
         page_data["comment"] = data.comment
     return render_to_response('songs/series.html',page_data)
 
-def detail(request, melding='',action='',item=""): # klaar
+def detail(request, melding='',action='',item="", soort='', sel=''): # klaar
     try:
         incoming = request.POST
     except:
         incoming = {}
     page_data = {"message": "",
                 "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+                            ('/songs/','start',"songs: start"),
+                            ('/songs/select/','select','select songs')]}
+    if soort:
+        page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
+            '{}'.format(soort), 'select songs'))
     page_data["title"] = "Detail"
     if item:
-        page_data["crumbs"].append(('/songs/detail/%s/' % item,'detail','songs: song'))
+        page_data["crumbs"].append(('/songs/detail/%s/' % item,'detail',
+            'songs: song'))
         if action == "edit":
-            page_data["crumbs"].append(('/songs/detail/%s/edit/' % item,'wijzig','songs: wijzig song'))
+            page_data["crumbs"].append(('/songs/detail/%s/edit/' % item,
+                'wijzig','songs: wijzig song'))
         song = my.Song.objects.get(pk=item)
         page_data["song"] = song
         opnames = []
@@ -174,7 +181,8 @@ def wijzigdetail(request, melding='',item=''): # klaar
 
     page_data = {"message": "",
                 "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+                            ('/songs/','start',"songs: start"),
+                            ('/songs/select/','select','select songs')]}
     #~ if datering == '':
          #~ melding = "Wijzigen niet mogelijk: geen datering opgegeven"
 
@@ -207,8 +215,8 @@ def wijzigtekst(request, melding='',action='', item=''):
     fnaam = incoming.get("fnaam",'')
     page_data = {"message": "",
                 "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
-
+                            ('/songs/','start',"songs: start"),
+                            ('/songs/select/','select','select songs')]}
     if not fnaam:
         song = my.Song.objects.get(pk=item)
         fnaam = song.url or song.titel + '.xml'

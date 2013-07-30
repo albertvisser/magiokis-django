@@ -11,11 +11,12 @@ def get_dic(series,cur):
 
 class Copyover(object):
     def __init__(self):
-        dbnaam = "/home/visser/django/pythoneer/songs/songs.db"
+        dbnaam = "/home/albert/www/django/magiokis/magiokis.db"
+        ## dbnaam = "/home/albert/www/django/magiokis/songs/songs.db"
         self.con = sql.connect(dbnaam)
         #~ destdb = "/home/visser/django/pythoneer/magiokis.db"
         #~ self.con2 = sql.connect(destdb)
-        
+
     def tabellen(self):
         """
         leest de codetabellen
@@ -23,7 +24,7 @@ class Copyover(object):
         en zet de gegevens in een lijst
         deze lijsten komen als waarde in een dictionary met de tabel als
         sleutel
-        #! bij het opvoeren van deze tabellen is het wellicht handig om 
+        #! bij het opvoeren van deze tabellen is het wellicht handig om
         #! voor het omgekeerd opzoeken een dictionary op te bouwen van
         #! naam - rowid paren
         """
@@ -40,7 +41,7 @@ class Copyover(object):
     def regtypes(self):
         """
         leest de regtypes tabel en zet de gegevens in een lijst
-        #! bij het opvoeren van deze tabel is het wellicht handig om 
+        #! bij het opvoeren van deze tabel is het wellicht handig om
         #! voor het omgekeerd opzoeken een dictionary op te bouwen van
         #! naam - rowid paren
         """
@@ -61,7 +62,7 @@ class Copyover(object):
             'where songs.id == registraties.song '
             'and regtypes.id == registraties.type')
         return [row for row in cur]
-      
+
     def songtekst(self,naam):
         #~ read/write (nog) met elementtree
         cur = self.con.cursor()
@@ -71,7 +72,7 @@ class Copyover(object):
         """
         leest de songs tabel en bouwt een lijst op met alle gerelateerde gegevens
         in tekstvorm
-        #! bij het opvoeren van deze tabellen is het wellicht handig om 
+        #! bij het opvoeren van deze tabellen is het wellicht handig om
         #! voor het omgekeerd opzoeken een dictionary op te bouwen van
         #! naam - rowid paren
         """
@@ -83,7 +84,7 @@ class Copyover(object):
             'left outer join auteurs on auteurs.id == songs.tekst '
             'left outer join makers on makers.id == songs.muziek')
         return [row for row in cur]
-        
+
     def opname(self,naam=""):
         """
         leest de tabellen opnameseries en opnames en bouwt per opnameserie
@@ -137,7 +138,7 @@ class Copyover(object):
         als sleutel; en de verzamelingen lijstaanduidingen van hetzelfde type
         staan weer als waarde in een dictionary met de type lijstaanduiding
         als sleutel.
-        Daarnaast wordt een lijst opgebouwd met per lijstaanduiding een 
+        Daarnaast wordt een lijst opgebouwd met per lijstaanduiding een
         eventuele omschrijving.
         """
         data = {'series': [], 'letters': [], 'jaren': []}
@@ -167,7 +168,7 @@ class Copyover(object):
                     for song,comment in songlist]
                 data[item][key] = newlist
         return data, more_data
-        
+
 if __name__ == "__main__":
     test = Copyover()
     #~ t = test.tabellen()
