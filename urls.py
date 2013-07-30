@@ -17,7 +17,8 @@ urlpatterns = patterns('',
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    (r'^admin/(.*)', admin.site.urls),
+    url(r'^admin/', include(admin.site.urls)),
+
     # media - static files to be served from development server
     #(r'^xspf_player/(?P<path>.*)$', 'django.views.static.serve',
     #    {'document_root': '/home/albert/xspf_player'}),
