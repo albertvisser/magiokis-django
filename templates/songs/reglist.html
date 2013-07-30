@@ -12,7 +12,7 @@
     </tr>
     {% for reg in reglist %}
     <tr>
-        <td><a href="/{{reg.url}}/">[{{play}}]</a></td>
+        <td><a href="http://data.magiokis.nl/{{reg.play}}/{{reg.url|lower}}">[{{play}}]</a></td>
         <td valign="top"><a href="/songs/reg/{{reg.id}}">{{reg.song}}</a></td>
         <td>{{reg.commentaar}}</td>
     </tr>

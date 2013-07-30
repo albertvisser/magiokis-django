@@ -1,13 +1,13 @@
 {% extends "songs/base_site.html" %}
 {% block content-data %}
-Kies een 
+Kies een
 <form style="display: inline" action="/songs/select/letter/" method="post">
 <select name="select" onchange="form.submit()">
 <option value="">letter</option>
 {% for letter in letterlijst %}<option value="{{letter}}"> {{letter}} </option>{% endfor %}
 </select>
-</form> 
-of 
+</form>
+of
 <form  style="display: inline" action="/songs/select/jaar/" method="post">
 <select name="select" onchange="form.submit()">
 <option value="">jaartal</option>
@@ -36,7 +36,7 @@ of zoek direct op (deel van) titel:
 <th align="left">Titel</th><th align="left">Datering</th>
 <th align="left">Beschrijving</th></tr></thead>
 {% for song in songslijst %}
-<tr><td valign="top"><a href="/songs/detail/{{song.id}}/">{{song.titel}}</a></td>
+<tr><td valign="top"><a href="/songs/detail/{{song.id}}/{{soort}}/{{sel}}/">{{song.titel}}</a></td>
 <td valign="top">{{song.datering}}</td><td>{{song.commentaar}}</td></tr>
 {% endfor %}
 </table>
