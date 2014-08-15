@@ -4,44 +4,44 @@ from django.db import models
 class Auteur(models.Model):
     naam = models.CharField(max_length=80,blank=True)
     class Meta:
-        db_table = u'auteurs'
-    def __unicode__(self):
+        db_table = 'auteurs'
+    def __str__(self):
         return self.naam
 
 class Maker(models.Model):
     naam = models.CharField(max_length=80,blank=True)
     class Meta:
-        db_table = u'makers'
-    def __unicode__(self):
+        db_table = 'makers'
+    def __str__(self):
         return self.naam
 
 class Datum(models.Model):
     naam = models.CharField(max_length=80,blank=True)
     waarde = models.IntegerField(blank=True)
     class Meta:
-        db_table = u'datums'
-    def __unicode__(self):
+        db_table = 'datums'
+    def __str__(self):
         return self.naam
 
 class Plaats(models.Model):
     naam = models.CharField(max_length=80,blank=True)
     class Meta:
-        db_table = u'plaatsen'
-    def __unicode__(self):
+        db_table = 'plaatsen'
+    def __str__(self):
         return self.naam
 
 class Bezetting(models.Model):
     naam = models.CharField(max_length=120,blank=True)
     class Meta:
-        db_table = u'bezettingen'
-    def __unicode__(self):
+        db_table = 'bezettingen'
+    def __str__(self):
         return self.naam
 
 class Instrument(models.Model):
     naam = models.CharField(max_length=80,blank=True)
     class Meta:
-        db_table = u'instrumenten'
-    def __unicode__(self):
+        db_table = 'instrumenten'
+    def __str__(self):
         return self.naam
 
 class Song(models.Model):
@@ -53,16 +53,16 @@ class Song(models.Model):
     url = models.CharField(max_length=80,blank=True)
     commentaar = models.TextField(blank=True)
     class Meta:
-        db_table = u'songs'
-    def __unicode__(self):
+        db_table = 'songs'
+    def __str__(self):
         return self.titel
 
 class Serieitem(models.Model):
     song = models.ForeignKey(Song)
     comment = models.TextField(blank=True)
     class Meta:
-        db_table = u'serieitems'
-    def __unicode__(self):
+        db_table = 'serieitems'
+    def __str__(self):
         return str(self.song)
 
 class Songserie(models.Model):
@@ -70,8 +70,8 @@ class Songserie(models.Model):
     song = models.ManyToManyField(Serieitem,related_name="serie")
     comment = models.TextField(blank=True)
     class Meta:
-        db_table = u'songseries'
-    def __unicode__(self):
+        db_table = 'songseries'
+    def __str__(self):
         return self.name
 
 class Jaren(models.Model):
@@ -79,8 +79,8 @@ class Jaren(models.Model):
     song = models.ManyToManyField(Serieitem,related_name="jaar")
     tekst = models.TextField(blank=True)
     class Meta:
-        db_table = u'jaren'
-    def __unicode__(self):
+        db_table = 'jaren'
+    def __str__(self):
         return self.jaar
 
 class Letters(models.Model):
@@ -88,8 +88,8 @@ class Letters(models.Model):
     song = models.ManyToManyField(Serieitem,related_name="beginletter")
     tekst = models.TextField(blank=True)
     class Meta:
-        db_table = u'letters'
-    def __unicode__(self):
+        db_table = 'letters'
+    def __str__(self):
         return self.letter
 
 class Opname(models.Model):
@@ -101,8 +101,8 @@ class Opname(models.Model):
     url = models.CharField(max_length=80)
     commentaar = models.TextField(blank=True)
     class Meta:
-        db_table = u'opnames'
-    def __unicode__(self):
+        db_table = 'opnames'
+    def __str__(self):
         return self.url
 
 class Opnameserie(models.Model):
@@ -111,8 +111,8 @@ class Opnameserie(models.Model):
     opname = models.ManyToManyField(Opname,blank=True)
     opgenomen = models.CharField(max_length=60,blank=True)
     class Meta:
-        db_table = u'opnameseries'
-    def __unicode__(self):
+        db_table = 'opnameseries'
+    def __str__(self):
         return self.naam
 
 class Regtype(models.Model):
@@ -122,8 +122,8 @@ class Regtype(models.Model):
     player = models.CharField(max_length=60,blank=True)
     editor = models.CharField(max_length=60,blank=True)
     class Meta:
-        db_table = u'regtypes'
-    def __unicode__(self):
+        db_table = 'regtypes'
+    def __str__(self):
         return self.naam
 
 class Registratie(models.Model):
@@ -132,8 +132,8 @@ class Registratie(models.Model):
     url = models.CharField(max_length=80,blank=True)
     commentaar = models.TextField(blank=True)
     class Meta:
-        db_table = u'registraties'
-    def __unicode__(self):
+        db_table = 'registraties'
+    def __str__(self):
         return ": ".join((str(self.type),self.url))
     def play(self):
         if self.type == '5':

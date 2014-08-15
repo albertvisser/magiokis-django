@@ -341,9 +341,10 @@ def reglist(request, melding='',item=''): # klaar
             '/songs/select/regs/{0}/'.format(item),'select',
             'select regs van type'))
         page_data["serienaam"] = naam
-        page_data["reglist"] = my.Registratie.objects.filter(type=item)
+        page_data["reglist"] = my.Registratie.objects.filter(type=item).order_by(
+            'song__titel')
         page_data["doe"] =  "Bekijk" if item == "5" else "Play"
-    return render_to_response('songs/reglist.html',page_data)
+    return render_to_response('songs/reglist.html', page_data)
 
 def reg(request='',melding='',item=''): # klaar
     try:

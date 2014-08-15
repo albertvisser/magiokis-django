@@ -2,9 +2,10 @@
 import os
 import shutil
 import xml.etree.ElementTree as et
+ROOT = "/home/albert/magiokis/data/zing"
 
 def gettekst(name):
-    file = os.path.join("/home/albert/magiokis/data/zing", name)
+    file = os.path.join(ROOT, name)
     if not os.path.exists(file):
         return [file,""]
     tree = et.ElementTree(file=file)
@@ -21,7 +22,7 @@ def gettekst(name):
     return titel, tekst
 
 def updatetekst(name, titel, tekst):
-    file = os.path.join("/home/albert/magiokis/data/zing", name)
+    file = os.path.join(ROOT, name)
     tree = et.ElementTree(file=file)
     root = et.Element('songtekst')
     new = et.SubElement(root, 'titel')
@@ -47,6 +48,6 @@ def updatetekst(name, titel, tekst):
 
 if __name__ == "__main__":
     titel, tekst = gettekst('Solid body.xml')
-    print '>>>{}<<<'.format(titel)
+    print('>>>{}<<<'.format(titel))
     for x in tekst.split('\n'):
-        print '>>>{}<<<'.format(x)
+        print('>>>{}<<<'.format(x))
