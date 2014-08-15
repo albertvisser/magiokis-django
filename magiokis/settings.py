@@ -1,5 +1,7 @@
 # Django settings for magiokis project.
 
+import os
+HERE = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -12,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-        'NAME': '/home/albert/www/django/magiokis/magiokis.db',             # Or path to database file if using sqlite3.
+        'NAME': os.path.join(HERE, 'magiokis.db'),             # Or path to database file if using sqlite3.
         'USER': '',             # Not used with sqlite3.
         'PASSWORD': '',         # Not used with sqlite3.
         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
@@ -47,7 +49,7 @@ USE_TZ = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/albert/www/django/magiokis/'
+MEDIA_ROOT = os.path.join(HERE, 'magiokis/')
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
@@ -101,7 +103,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "/home/albert/www/django/magiokis/templates",
+    os.path.join(HERE, "templates"),
 )
 
 INSTALLED_APPS = (
