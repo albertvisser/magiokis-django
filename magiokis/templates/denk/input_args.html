@@ -13,9 +13,9 @@ function check(o)
 </script>{% endblock %}
 {% block content-data %}
 <h3>{{ subtitle}}</h3>
-<form action="{{ next }}" ><br>
+<form action="{{ next }}" method="post"><br>
 <input type="text" name="txtInput" size="20" />
-<input type="submit" value=" {{ subtext }} "method="post" onclick='javascript:return(check(form.txtInput))'>
+<input type="submit" value=" {{ subtext }} " onclick='javascript:return(check(form.txtInput))'>
 <br /><br />
 </form>
 {% if rest %}
