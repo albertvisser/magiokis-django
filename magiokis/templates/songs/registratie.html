@@ -1,7 +1,7 @@
 {% extends "songs/base_site.html" %}
 {% block content-data %}
  <h4>{{melding}}</h4>
- <form action="/songs/reg/{{reg.id}}/update/" method="post">
+ <form action="/songs/reg/{{reg.id}}/update/" method="post"> {% csrf_token %}
  <table width="800" border="0"><tr><td>
   <table width="100%">
    <tr>

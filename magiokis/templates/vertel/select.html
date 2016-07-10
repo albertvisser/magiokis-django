@@ -1,7 +1,7 @@
 {% extends "vertel/base_site.html" %}
 {% block content-data %}
 {% if cats %}
-<form id="frmsel" action="/vertel/select/cat/sel/" method="post">
+<form id="frmsel" action="/vertel/select/cat/sel/" method="get">
 <br/>Kies een categorie:
 <select name="lbSelCat" size="1">
 {% for x in cats %}<option value="{{x.id}}">{{x}}</option>{% endfor %}</select>
@@ -10,7 +10,7 @@
 </form>
 {% endif %}
 {% if zoek %}
-<form id="frmzoek" action="/vertel/select/zoek/" method="post">
+<form id="frmzoek" action="/vertel/select/zoek/" method="get">
 <br/>Zoeken op (deel van) titel:
 <input type="text" name="txtZoek" id="txtZoek" size="40" maxlength="80" value="{{zoek}}"/></li>
 <!-- <input type="hidden" name="hUser" id="hUserS" value="%s"> -->

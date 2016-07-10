@@ -47,7 +47,7 @@ function restore2(x) {
  </tr>
  {% for item in tabel %}
  <tr>
-  <form action="/songs/tabel/{{tabsoort}}/{{item.id}}/update/" method="post">
+  <form action="/songs/tabel/{{tabsoort}}/{{item.id}}/update/" method="post"> {% csrf_token %}
     <td>
     <input type="text" name="txtNaam" id="txtNaam{{item.id}}" value="{{item.naam}}"
         onkeyup="enable('{{item.id}}')" size="40" maxlength="80"/>
@@ -69,7 +69,7 @@ function restore2(x) {
  </tr>
  {% endfor %}
  <tr>
-  <form action="/songs/tabel/{{tabsoort}}/add/" method="post">
+  <form action="/songs/tabel/{{tabsoort}}/add/" method="post"> {% csrf_token %}
     <td>
     <input type="text" name="txtNaam" id="txtNaam0" value=""
         onkeyup="enable('0')" size="40" maxlength="80"/>

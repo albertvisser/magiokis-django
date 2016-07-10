@@ -30,7 +30,7 @@ function herbepaal(o)
 </script>
 {% endblock %}
 {% block content-data %}
-<form action="{{ next }}" method="post">
+<form action="{{ next }}" method="post">{% csrf_token %}
 <!--Titel: --><input type="text" name="txtTitel" value="{{ titel }}" size="80" maxlength="80"><br />
 <hr />
 <input type="hidden" name="hselItem" value="{{ id }}" size="90" maxlength="80"><br />

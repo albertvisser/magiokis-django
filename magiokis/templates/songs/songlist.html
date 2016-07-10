@@ -1,14 +1,14 @@
 {% extends "songs/base_site.html" %}
 {% block content-data %}
 Kies een
-<form style="display: inline" action="/songs/select/letter/" method="post">
+<form style="display: inline" action="/songs/select/letter/" method="get">
 <select name="select" onchange="form.submit()">
 <option value="">letter</option>
 {% for letter in letterlijst %}<option value="{{letter}}"> {{letter}} </option>{% endfor %}
 </select>
 </form>
 of
-<form  style="display: inline" action="/songs/select/jaar/" method="post">
+<form  style="display: inline" action="/songs/select/jaar/" method="get">
 <select name="select" onchange="form.submit()">
 <option value="">jaartal</option>
 {% for jaar in jarenlijst %}<option value="{{jaar}}"> {{jaar}} </option>{% endfor %}
@@ -16,7 +16,7 @@ of
 </form>
 om een selectie van songs te bekijken<br/>
 of zoek direct op (deel van) titel:
-<form style="display: inline" action="/songs/select/search/" method="post">
+<form style="display: inline" action="/songs/select/search/" method="get">
     <input type="text" name="select" size="30" maxlength="80" />
     <input type="submit" value="Zoek">
 </form>

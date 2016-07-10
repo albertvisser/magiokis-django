@@ -1,8 +1,8 @@
-## from django.template import Context, loader
+from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-import magiokis.vertel.models as my
 from django.shortcuts import render_to_response, get_object_or_404
+import magiokis.vertel.models as my
 
 def index(request, melding=''):
     page_data = {"message": "",
@@ -11,7 +11,8 @@ def index(request, melding=''):
     page_data["title"] = "Start"
     if melding:
         page_data["message"] = melding
-    return render_to_response('vertel/start.html',page_data)
+    return render_to_response('vertel/start.html',page_data,
+        context_instance=RequestContext(request))
 
 def doe(request, melding='', wat_te_doen=''):
     try:
@@ -47,9 +48,11 @@ def doe(request, melding='', wat_te_doen=''):
     return render_to_response('vertel/start.html',page_data)
 
 def selcat(request, zoekdata="", melding=''):
-    try:
+    if request.method == 'GET':
+        incoming = request.GET
+    elif request.method == 'POST':
         incoming = request.POST
-    except:
+    else:
         incoming = {}
     page_data = {"message": "",
                 "crumbs": [('/', 'Home', 'Magiokis'),
@@ -77,9 +80,11 @@ def selcat(request, zoekdata="", melding=''):
     return render_to_response('vertel/select.html',page_data)
 
 def selzoek(request, zoekdata='', melding=''):
-    try:
+    if request.method == 'GET':
+        incoming = request.GET
+    elif request.method == 'POST':
         incoming = request.POST
-    except:
+    else:
         incoming = {}
     page_data = {"message": "",
                 "crumbs": [('/', 'Home', 'Magiokis'),
@@ -203,4 +208,5 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
     if melding:
         page_data["message"] = melding
     page_data["cats"] = my.Bundel.objects.all()
-    return render_to_response('vertel/detail.html',page_data)
+    return render_to_response('vertel/detail.html',page_data,
+        context_instance=RequestContext(request))

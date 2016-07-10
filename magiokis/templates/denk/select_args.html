@@ -1,7 +1,7 @@
 {% extends "denk/base_site.html" %}
 {% block content-data %}
 <h3>{{ subtitle}}</h3>
-<form action="/denk/select/trefw/" method="post"><br>
+<form action="/denk/select/trefw/" method="get"><br>
 <select name="lbSelItem" size="1" onfocus="document.getElementById('pbToon').disabled=false">
 {% for trefw in selection %}
 <option value="{{ trefw.id }}">{{ trefw.woord }}</option>

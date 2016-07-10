@@ -25,7 +25,7 @@ function checkH() {
 </script>
 {% endblock %}
 {% block content-data %}
-<form name="frmWijzigVerhaal" action="/vertel/detail/{{verhaal.id|default:"0"}}/wijzig/" method="post">
+<form name="frmWijzigVerhaal" action="/vertel/detail/{{verhaal.id|default:"0"}}/wijzig/" method="post">{% csrf_token %}
 <table border="0">
 <tr>
     <td>verhaal titel: </td>
@@ -57,6 +57,7 @@ function checkH() {
 </form>
 {% if verhaal %}
 <form name="frmKiesHoofdstuk" action="/vertel/detail/{{verhaal.id}}/kies/" method="post">
+{% csrf_token %}
     <input type="hidden" name="hUserH" value="%s"/>
     <input type="hidden" name="hselIdH" value="%s"/>
     hoofdstukken:
@@ -70,7 +71,7 @@ function checkH() {
 <!--    <a href="/vertel/detail/{{verhaal.id}}/nieuw/" title=""><input type="button" value="Nieuw hoofdstuk" /></a><br /> -->
 </form>
 <hr>
-<form name="frmWijzigHoofdstuk" action="/vertel/detail/{{verhaal.id}}/{{hst.id|default:"0"}}/wijzig/" method="post">
+<form name="frmWijzigHoofdstuk" action="/vertel/detail/{{verhaal.id}}/{{hst.id|default:"0"}}/wijzig/" method="post"> {% csrf_token %}
     <!-- <input type="hidden" name="hUserT" value="{{verteller}}"/> -->
     <input type="hidden" name="hselIdT" value="{{verhaal.id}}"/>
     <input type="hidden" name="hselHs" value="{{hst.id}}"/>

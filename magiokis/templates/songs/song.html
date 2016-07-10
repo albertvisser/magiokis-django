@@ -26,9 +26,9 @@ van deze song{% if opnames %}:{% else %} vastgelegd<br/><br/>{% endif %}</h3><!-
 <td>Instrumentarium/Bezetting/Commentaar:</td></tr>
 {% for item in opnames %}
 <tr><td><!-- <a href="/songs/mp3/{{item.url|lower}}">[Play]</a><a href="/songs/opname/play/{{item.url}}/">[Play]</a> -->
-    <object type="application/x-shockwave-flash" data="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&"  width="17" height="17">
+    <object type="application/x-shockwave-flash" data="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&"  width="20" height="20">
         <param name="movie" value="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&" />
-        <img src="http://local.magiokis.nl/xspf_player/noflash.gif" alt="Play"width="17" height="17" />
+        <img src="http://local.magiokis.nl/xspf_player/noflash.gif" alt="Play"width="20" height="20" />
     </object>
 </td>
 <td><a href="/songs/opname/{{item.id}}/">{{item.loc}}</a></td>

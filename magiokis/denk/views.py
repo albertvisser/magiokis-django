@@ -1,10 +1,8 @@
-﻿## from django.template import Context, loader
-## from django.http import
-## from django.http import Http404
+﻿from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
-import magiokis.denk.models as my
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+import magiokis.denk.models as my
 
 def index(request,trefw=None):
     page_data = {"message": "",
@@ -37,7 +35,7 @@ def select(request,option='',trefw=None,data=None):
         page_data["crumbs"].append(('/denk/enter/trefw/',"op trefwoord","denk: enter trefwoord"))
         page_data["crumbs"].append((request.path,"selectie","denk: teksten bij trefwoord"))
         if trefw is None:
-            trefw = request.POST["lbSelItem"]
+            trefw = request.GET["lbSelItem"]
         data = my.Trefw.objects.get(id=trefw)
         titel = 'Overzicht bedenksels bij trefwoord "%s"' % data
         page_data["hier"] = 'trefw/%s/' % trefw
@@ -46,7 +44,7 @@ def select(request,option='',trefw=None,data=None):
         page_data["crumbs"].append(('/denk/enter/zoek1',"op titel","denk: zoeken in titel "))
         page_data["crumbs"].append((request.path,"selectie","denk: teksten op titeldeel "))
         if data is None:
-            data = request.POST["txtInput"]
+            data = request.GET["txtInput"]
         titel = 'Overzicht bedenksels met "%s" in titel' % data
         page_data["hier"] = 'zoek1/%s/' % data
         selectie = my.Denksel.objects.filter(titel__icontains=data)
@@ -54,7 +52,7 @@ def select(request,option='',trefw=None,data=None):
         page_data["crumbs"].append(('/denk/enter/zoek2',"op tekst","denk: zoeken in tekst"))
         page_data["crumbs"].append((request.path,"selectie","denk: teksten op tekstdeel"))
         if data is None:
-            data = request.POST["txtInput"]
+            data = request.GET["txtInput"]
         titel = 'Overzicht bedenksels met "%s" in tekst' % data
         page_data["hier"] = 'zoek2/%s/' % data
         selectie = my.Denksel.objects.filter(tekst__icontains=data)
@@ -73,6 +71,7 @@ def enter(request,option='',tekst=''):
                 "rest":""            }
     ## root,app,where,option,data = request.path.split('/')
     page_data["title"] = "Enter " + option
+    page_data["reqtype"] = 'get'
     if option == 'trefw':
         page_data["crumbs"].append((request.path,"op trefwoord","denk: enter trefwoord"))
         titel = "Kies een trefwoord uit de lijst"
@@ -102,6 +101,7 @@ def enter(request,option='',tekst=''):
                     page_data["next"] = '/denk/trefw/add/%s/' % tekst
                 else:
                     page_data["next"] = '/denk/trefw/add/'
+                page_data["reqtype"] = "post"
             else:
                 tw = my.Trefw.objects.create(woord=nw_trefw)
                 if tekst:
@@ -111,6 +111,7 @@ def enter(request,option='',tekst=''):
         else:
             page_data["crumbs"].append((request.path,"nieuw trefwoord","denk: nieuw trefwoord"))
             page_data["next"] = '/denk/trefw/add/'
+            page_data["reqtype"] = "post"
             if tekst:
                 page_data["next"] = tekst.join((page_data["next"],'/'))
         titel = "Geef een nieuw trefwoord op"
@@ -119,9 +120,10 @@ def enter(request,option='',tekst=''):
         return HttpResponse('"%(option)s" niet gedefinieerd bij "%(where)s"')
     page_data['subtitle'] = titel
     if option == "trefw":
-        return render_to_response('denk/select_args.html',page_data)
+        return render_to_response('denk/select_args.html', page_data)
     else:
-        return render_to_response('denk/input_args.html',page_data)
+        return render_to_response('denk/input_args.html', page_data,
+            context_instance=RequestContext(request))
 
 def detail(request,tekst='',option='',seltype='',seldata='',trefw=''):
     page_data = {"message": "",
@@ -130,7 +132,7 @@ def detail(request,tekst='',option='',seltype='',seldata='',trefw=''):
                 "knoptekst": "Nieuwe opvoeren"}
     data = request.path.split('/')
     denk_id = tekst
-    if not seltype and "hselopt" in request.POST:
+    if not seltype and "hselopt" in request.POST: # moet dit 'selopt' in request.GET worden?
         test = request.POST["hselopt"].split("/")
         seltype = test[0]
         if len(test) > 1:
@@ -198,4 +200,5 @@ def detail(request,tekst='',option='',seltype='',seldata='',trefw=''):
         page_data["trefw_in"] = trefw
         page_data["trefw_ex"] = [x for x in my.Trefw.objects.all() if x not in trefw]
     page_data["crumbs"].append(('/denk/detail/%s/' % denk_id,'tekst','deze tekst'))
-    return render_to_response('denk/detail.html',page_data)
+    return render_to_response('denk/detail.html', page_data,
+        context_instance=RequestContext(request))

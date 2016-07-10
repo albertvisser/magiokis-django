@@ -1,5 +1,5 @@
 import string
-## from django.template import Context, loader
+from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -26,12 +26,14 @@ def songlist(request, melding='',soort='',data=''): # klaar
                             ('/songs/select/','select','select songs')]}
     page_data["title"] = "Select: songs "
     # kolom met letters opbouwen
-    page_data['letterlijst'] = [x.letter for x in my.Letters.objects.all().order_by('letter')]
+    page_data['letterlijst'] = [x.letter for x in my.Letters.objects.all().order_by(
+        'letter')]
     #  kolom met jaren opbouwen
-    page_data["jarenlijst"] = [x.jaar for x in my.Jaren.objects.all().order_by('jaar')]
+    page_data["jarenlijst"] = [x.jaar for x in my.Jaren.objects.all().order_by(
+        'jaar')]
 
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     if 'select' in incoming:
@@ -44,7 +46,7 @@ def songlist(request, melding='',soort='',data=''): # klaar
             elif data in list(string.digits):
                 data = "0"
                 soort = "letter"
-            elif data in list(string.letters):
+            elif data in list(string.ascii_letters):
                 soort = 'letter'
     if soort:
         page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort, data),
@@ -73,6 +75,7 @@ def songlist(request, melding='',soort='',data=''): # klaar
         page_data["sel"] = data
         page_data["title"] += page_data["lijstoms"]
         if songslijst.count() == 1:
+            # TODO: selectie meegeven voor kruimelpad?
             return HttpResponseRedirect("/songs/detail/{0}/".format(songslijst[0].id))
         page_data["songslijst"] = songslijst
 
@@ -80,7 +83,7 @@ def songlist(request, melding='',soort='',data=''): # klaar
 
 def series(request, melding='',item=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
     except:
@@ -104,7 +107,7 @@ def series(request, melding='',item=''): # klaar
 
 def detail(request, melding='',action='',item="", soort='', sel=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     page_data = {"message": "",
@@ -135,18 +138,19 @@ def detail(request, melding='',action='',item="", soort='', sel=''): # klaar
                 oms = ", ".join([ins.naam for ins in item.instrumenten.all()])
             it['oms'] = "\n".join((oms,item.commentaar))
             opnames.append((item.datum.waarde,it))
-        opnames.sort()
+        opnames.sort(key=lambda x: x[0])
         page_data["opnames"] = [x[1] for x in opnames]
         registraties = my.Registratie.objects.filter(song=song.id).order_by('type')
         page_data["registraties"] = registraties
         tekst = song.url if song.url else song.titel + ".xml"
         ## y = ''
-        try:
-            x, y = gettekst(tekst)
-        except TypeError:
-            pass
+        ## try:
+            ## x, y = gettekst(tekst)
+        x, y = gettekst(tekst)
+        ## except TypeError:
+            ## pass
         if y:
-            page_data["tekst"] = [unicode(x), unicode(y)]
+            page_data["tekst"] = [str(x), str(y)]
         ## ds = Songtekst(item)
         ## ds.read()
         ## page_data["tekst"] = (ds.titel, '<br />'.join(ds.regels))
@@ -161,7 +165,8 @@ def detail(request, melding='',action='',item="", soort='', sel=''): # klaar
     if action:
         page_data["auteurs"] = my.Auteur.objects.all().order_by("naam")
         page_data["makers"] = my.Maker.objects.all().order_by("naam")
-        return render_to_response('songs/wijzig.html',page_data)
+        return render_to_response('songs/wijzig.html',page_data,
+            context_instance = RequestContext(request))
     else:
         return render_to_response('songs/song.html',page_data)
 
@@ -234,7 +239,7 @@ def wijzigtekst(request, melding='',action='', item=''):
 
 def opnlist(request, melding='',item=""): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
     except:
@@ -258,7 +263,7 @@ def opnlist(request, melding='',item=""): # klaar
 
 def opname(request,melding='',item=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     page_data = {"message": "",
@@ -276,7 +281,8 @@ def opname(request,melding='',item=''): # klaar
     page_data["opnins"] = [x for x in inslist]
     page_data["notins"] = [x for x in allins if x not in inslist]
     #~ return page_data
-    return render_to_response('songs/opname.html',page_data)
+    return render_to_response('songs/opname.html',page_data,
+        context_instance = RequestContext(request))
 
 def wijzigopname(request, melding='',item=''): # klaar
     try:
@@ -329,7 +335,7 @@ def playopname(request,melding='',item=''):
 
 def reglist(request, melding='',item=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     page_data = {"message": "",
@@ -348,7 +354,7 @@ def reglist(request, melding='',item=''): # klaar
 
 def reg(request='',melding='',item=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     page_data = {"message": "",
@@ -358,7 +364,8 @@ def reg(request='',melding='',item=''): # klaar
     page_data["reg"] = my.Registratie.objects.get(id=item)
     page_data["songs"] = my.Song.objects.all().order_by("titel")
     page_data["types"] = my.Regtype.objects.all()
-    return render_to_response('songs/registratie.html',page_data)
+    return render_to_response('songs/registratie.html',page_data,
+        context_instance = RequestContext(request))
 
 def wijzigreg(request, melding='',item=''): # klaar
     try:
@@ -393,7 +400,7 @@ def playreg(request,melding='',item=''):
     pass
 def tabel(request, melding='',soort=''): # klaar
     try:
-        incoming = request.POST
+        incoming = request.GET
     except:
         incoming = {}
     page_data = {"message": "",
@@ -421,9 +428,11 @@ def tabel(request, melding='',soort=''): # klaar
             data = my.Regtype.objects.all().order_by("naam")
         page_data["tabel"] = data
     if soort == "Regtype":
-        return render_to_response('songs/regtype.html',page_data)
+        return render_to_response('songs/regtype.html',page_data,
+            context_instance = RequestContext(request))
     else:
-        return render_to_response('songs/tabel.html',page_data)
+        return render_to_response('songs/tabel.html',page_data,
+            context_instance = RequestContext(request))
 
 def wijzigtabel(request, melding='',soort='',item=''): # klaar
     try:

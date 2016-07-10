@@ -5,7 +5,7 @@ import xml.etree.ElementTree as et
 ROOT = "/home/albert/magiokis/data/zing"
 
 def gettekst(name):
-    file = os.path.join(ROOT, name)
+    file = os.path.join(ROOT.encode('utf-8'), name.encode('utf-8'))
     if not os.path.exists(file):
         return [file,""]
     tree = et.ElementTree(file=file)

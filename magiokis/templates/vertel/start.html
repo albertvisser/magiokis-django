@@ -27,7 +27,7 @@ function val() {
 </script>
 {% endblock %}
 {% block content-data %}
-<form action="/vertel/doe/" method="post">
+<form action="/vertel/doe/" method="post"> {% csrf_token %}
 <ol>
   <!-- <li>Geef verteller naam op:
   <input type="text" name="txtUser" id="txtUser" %s />
