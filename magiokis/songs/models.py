@@ -97,7 +97,7 @@ class Opname(models.Model):
     datum = models.ForeignKey(Datum,blank=True,null=True)
     song = models.ForeignKey(Song,null=True)
     bezetting = models.ForeignKey(Bezetting,blank=True,null=True)
-    instrumenten = models.ManyToManyField(Instrument,blank=True,null=True)
+    instrumenten = models.ManyToManyField(Instrument,blank=True)
     url = models.CharField(max_length=80)
     commentaar = models.TextField(blank=True)
     class Meta:

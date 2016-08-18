@@ -1,0 +1,13 @@
+# use glob syntax.
+syntax: glob
+
+*.bak
+*~
+*pyc
+*db
+*log
+*txt
+*ini
+*xml
+pylint*
+*archive.zip
