@@ -8,6 +8,8 @@ SECRET_KEY = ''
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['django.magiokis.nl']
+
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
