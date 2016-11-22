@@ -11,10 +11,10 @@
  </table><br/>
 {%if song%}
 <span class="button">
-<a href="/songs/detail/{{song.id}}/edit/">Wijzig details</a></span>
+<a href="/songs/detail/{{song.id}}/edit/{% if soort %}{{soort}}/{{sel}}/{% endif %}">Wijzig details</a></span>
 <span class="button"><a href="#top">Terug naar top</a></span>
 {%else%}
-<span class="buttno"><a href="/songs/detail/add/">Nieuwe song</a></span>
+<span class="buttno"><a href="/songs/detail/add/{% if soort %}{{soort}}/{{sel}}/{% endif %}">Nieuwe song</a></span>
 {%endif%}
 <hr style="height: 3px"/>
 <a name="opnames"></a>
@@ -26,17 +26,17 @@ van deze song{% if opnames %}:{% else %} vastgelegd<br/><br/>{% endif %}</h3><!-
 <td>Instrumentarium/Bezetting/Commentaar:</td></tr>
 {% for item in opnames %}
 <tr><td><!-- <a href="/songs/mp3/{{item.url|lower}}">[Play]</a><a href="/songs/opname/play/{{item.url}}/">[Play]</a> -->
-    <object type="application/x-shockwave-flash" data="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&"  width="20" height="20">
-        <param name="movie" value="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&" />
-        <img src="http://local.magiokis.nl/xspf_player/noflash.gif" alt="Play"width="20" height="20" />
+    <object type="application/x-shockwave-flash" data="http://original.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&"  width="20" height="20">
+        <param name="movie" value="http://original.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{item.url|lower}}&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&" />
+        <img src="http://original.magiokis.nl/xspf_player/noflash.gif" alt="Play"width="20" height="20" />
     </object>
 </td>
-<td><a href="/songs/opname/{{item.id}}/">{{item.loc}}</a></td>
+<td><a href="/songs/opname/{{item.id}}/{% if soort %}{{soort}}/{{sel}}/{% endif %}">{{item.loc}}</a></td>
 <td>{{item.oms}}</td></tr>
 {% endfor %}
 </table><br/>
 {% endif %}
-<span class="button"><a href="/songs/{{song.id}}/opname/add/">Nieuwe opname</a></span>
+<span class="button"><a href="/songs/{{song.id}}/opname/add/{% if soort %}{{soort}}/{{sel}}/{% endif %}">Nieuwe opname</a></span>
 <span class="button"><a href="#top">Terug naar top</a></span>
 <hr style="height: 3px"/>
 <a name="muziek"></a>
@@ -48,13 +48,13 @@ van deze song{% if registraties %}:{% else %} vastgelegd<br/><br/>{% endif %}</h
 <td>Commentaar:</td></tr>
 {% for item in registraties %}
 <tr><td><a href="http://data.magiokis.nl/{{item.play}}/{{item.url|lower}}">{% if item.type.id == 5 %}[View]{%else%}[Play]{%endif%}</a></td>
-<td><a href="/songs/reg/{{item.id}}/" target="_blank">{{item.type}}</a></td>
+<td><a href="/songs/reg/{{item.id}}/{% if soort %}{{soort}}/{{sel}}/{% endif %}">{{item.type}}</a></td>
 <td>{{item.commentaar}}</td></tr>
 {% endfor %}
 </table>
 <br />
 {% endif %}
-<span class="button"><a href="/songs/{{song.id}}/reg/add/">Nieuwe registratie</a></span>
+<span class="button"><a href="/songs/{{song.id}}/reg/add/{% if soort %}{{soort}}/{{sel}}/{% endif %}">Nieuwe registratie</a></span>
 <span class="button"><a href="#begin">Terug naar top</a></span>
 <hr style="height: 3px"/>
 {% if tekst %}
@@ -67,8 +67,8 @@ van deze song{% if registraties %}:{% else %} vastgelegd<br/><br/>{% endif %}</h
 {% else %}
 <h3>(nog) geen tekst aanwezig</h3><br/>
 {% endif %}
-<span class="button"><a href="#top">Terug naar top</a></span>
 <span class="button"><a href="/songs/tekst/{{song.id}}/
-{% if tekst %}edit{%else%}add{% endif %}/">Songtekst
+{% if tekst %}edit{%else%}add{% endif %}/{% if soort %}{{soort}}/{{sel}}/{% endif %}">Songtekst
 {% if tekst %}wijzigen{%else%}opvoeren{% endif %}</a></span>
+<span class="button"><a href="#top">Terug naar top</a></span>
 {%endblock%}

@@ -29,7 +29,8 @@ function herbepaal(o,p)
 </script>{% endblock %}
 {% block content-data %}
  <h4>{{melding}}</h4>
- <form action="/songs/opname/{{opn.id}}/update/" method="post"> {% csrf_token %}
+ <form action="/songs/opname/{{opn.id}}/update/{% if soort %}{{soort}}/{{sel}}/{% endif %}"
+    method="post"> {% csrf_token %}
  <table width="800" border="0"><tr><td>
   <table width="100%">
    <tr>
@@ -104,7 +105,8 @@ function herbepaal(o,p)
     </td></tr>
   </table>
   <input type="hidden" name="instcodes" id="instcodes" value ="">
-  <input type="submit" name="update" value = "Wijzigen" onclick="herbepaal(Inst,instcodes)">
+  <input type="submit" name="update" value = {% if opn.id == 0 %}"Opvoeren"
+    {% else %}"Wijzigen"{% endif %} onclick="herbepaal(Inst,instcodes)">
  </td></tr></table>
  </form>
 {%endblock%}

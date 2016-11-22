@@ -1,7 +1,8 @@
 {% extends "songs/base_site.html" %}
 {% block content-data %}
  <h4>{{melding}}</h4>
- <form action="/songs/reg/{{reg.id}}/update/" method="post"> {% csrf_token %}
+ <form action="/songs/reg/{{reg.id}}/update/{% if soort %}{{soort}}/{{sel}}/{% endif %}"
+    method="post"> {% csrf_token %}
  <table width="800" border="0"><tr><td>
   <table width="100%">
    <tr>
@@ -21,9 +22,9 @@
      </td>
     </tr>
     <tr>
-     <td><label for="Soort">Soort registratie:</label></td>
+     <td><label for="Type">Soort registratie:</label></td>
      <td colspan="3">
-      <select name="Soort">{% for typ in types %}
+      <select name="Type">{% for typ in types %}
       <option {% if typ.id == reg.type.id %}selected="selected"{% endif %}
       value="{{typ.id}}">{{typ.naam}}</option>
       {% endfor %}</select>
@@ -38,7 +39,8 @@
      <textarea name="Opm"  cols="60" rows="5">{{reg.commentaar}}</textarea>
     </td></tr>
   </table>
-  <input type="submit" name="update" value = "Wijzigen">
+  <input type="submit" name="update" value = {% if reg.id == 0 %}"Opvoeren"
+    {% else %}"Wijzigen"{% endif %}>
  </td></tr></table>
  </form>
 {%endblock%}
