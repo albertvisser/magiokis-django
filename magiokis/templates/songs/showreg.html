@@ -1,0 +1,28 @@
+{% extends "songs/base_site.html" %}
+{% block content-data %}
+
+{% if page > 1 %}
+<a href="/songs/reg/show/{{ reg.id }}/1/" class="back">eerste blad</a>
+&nbsp;&nbsp;
+<a href="/songs/reg/show/{{ reg.id }}/{{ page|add:'-1' }}/" class="back">vorige blad</a>
+{% else %}
+<span class="back">dit is het eerste blad</span>
+&nbsp;&nbsp;
+<span class="back">geen vorig blad</span>
+{% endif %}
+&nbsp;&nbsp;
+{% if page < max %}
+<a href="/songs/reg/show/{{ reg.id }}/{{ page|add:'+1' }}/" class="back">volgende blad</a>
+&nbsp;&nbsp;
+<a href="/songs/reg/show/{{ reg.id }}/{{ max}}/" class="back">laatste blad</a>
+{% else %}
+<span class="back">geen volgend blad</span>
+&nbsp;&nbsp;
+<span class="back">dit is het laatste blad</span>
+{% endif %}
+<br/>
+<img src="http://data.magiokis.nl/mmap/{{ fnam }}" border="0"
+    width="800" height="1072" alt="{{ fnam }}" />
+</body></html>
+{% endblock %}
+

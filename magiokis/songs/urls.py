@@ -52,8 +52,8 @@ urlpatterns = patterns('magiokis.songs.views',
     (r'^reg/(?P<item>\d+)/update/$',                    'wijzigreg'),
     (r'^reg/(?P<item>\d+)/update/(?P<soort>(jaar|letter|search))/'
         '(?P<sel>(\w|\s)+)/$',                          'wijzigreg'),
-    # (r'^reg/play/(?P<item>\w+)/$', 'playreg'),  # dit is meer een "open/download" link
-    # maar die zijn vervangen naar een directe link op data.magiokis.nl
+    (r'^reg/show/(?P<item>\w+)/$',                      'showreg'),
+    (r'^reg/show/(?P<item>\w+)/(?P<page>\w+)/$',        'showreg'),
     (r'^tabel/(?P<soort>\w+)/$',                        'tabel'),
     (r'^tabel/(?P<soort>\w+)/(?P<item>\d+)/update/$',   'wijzigtabel'),
     (r'^tabel/(?P<soort>\w+)/add/$',                    'wijzigtabel'),

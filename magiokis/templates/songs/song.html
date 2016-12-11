@@ -47,7 +47,10 @@ van deze song{% if registraties %}:{% else %} vastgelegd<br/><br/>{% endif %}</h
 <tr><td>&nbsp;</td><td>Soort registratie:</td>
 <td>Commentaar:</td></tr>
 {% for item in registraties %}
-<tr><td><a href="http://data.magiokis.nl/{{item.play}}/{{item.url|lower}}">{% if item.type.id == 5 %}[View]{%else%}[Play]{%endif%}</a></td>
+<tr><td>
+{% if item.type.id == 5 %}<a href="/songs/reg/show/{{item.id}}/" target='_blank'>[View]
+{%else%}<a href="http://data.magiokis.nl/{{item.play}}/{{item.url|lower}}">[Play]
+{%endif%}</a></td>
 <td><a href="/songs/reg/{{item.id}}/{% if soort %}{{soort}}/{{sel}}/{% endif %}">{{item.type}}</a></td>
 <td>{{item.commentaar}}</td></tr>
 {% endfor %}

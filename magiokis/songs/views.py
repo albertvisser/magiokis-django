@@ -158,7 +158,8 @@ def detail(request, melding='', action='', item="", soort='', sel=''):
         ## page_data["tekst"] = (ds.titel, '<br />'.join(ds.regels))
         #~ return page_data
     elif action == "add":
-        page_data["crumbs"].append(('/songs/detail/nieuw','nieuwe tekst','songs: nieuw'))
+        page_data["crumbs"].append(('/songs/detail/nieuw','nieuwe tekst',
+            'songs: nieuw'))
     else:
         melding = "Fout in aansturing: geen item of action (add)"
 
@@ -491,8 +492,20 @@ def wijzigreg(request, melding='', item='', soort='', sel=''):
     if soort: item = '/'.join((item, soort, sel))
     return HttpResponseRedirect('/songs/reg/{0}/'.format(item))
 
-def playreg(request,melding='',item=''):
-    pass
+def showreg(request,melding='',item='', page=''):
+    reg = my.Registratie.objects.get(pk=item)
+    ## return HttpResponse("<html><head>{}</head><body><p>{}</p></body></html>".format(
+        ## reg.song.titel, reg.type.id))
+    if reg.type.id != 5:
+        return HttpResponseRedirect("http://data.magiokis.nl/{}/{}".format(
+            reg.play(), reg.url.lower()))
+    page = int(page) if page else 1
+    pages = reg.url.split(':')
+    max = len(pages)
+    fnam = pages[page - 1]
+    page_data = {'reg': reg, 'page': page, 'fnam': fnam, 'max': max}
+    return render_to_response('songs/showreg.html', page_data)
+
 def tabel(request, melding='',soort=''):
     try:
         incoming = request.GET
