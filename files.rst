@@ -1,13 +1,14 @@
 Files in this directory
+=======================
 
+files.rst
+    this file
+.hgignore
+    stuff for dvcs to ignore
 manage.py
     Django utility functions
 readme.rst
     what this is about
-files.rst
-    this file
-.ignore
-    stuff for dvcs to ignore
 
 magiokis/
 .........
@@ -24,7 +25,8 @@ urls.py
 views.py
     processing code
 wsgi.py
-    wsgi server
+    wsgi server program
+
 
 magiokis/denk/
 ..............
@@ -41,6 +43,7 @@ urls.py
 views.py
     processing code
 
+
 magiokis/songs/
 ...............
 application code for the songs app
@@ -52,8 +55,7 @@ admin.py
 copyover.py
     script (intended to be) used in conversion from old site
 getsongtekst.py
-    copy of script to read songtekst
-    TODO: compare with original, if duplicate remove and fix import
+    songtekst functions used in views.py
 models.py
     data definitions
 urls.py
@@ -61,30 +63,13 @@ urls.py
 views.py
     processing code
 
+
 magiokis/songs/templatetags/
 ............................
 __init__.py
     (empty) (sub)package indicator
 extratags.py
     custom tag definition(s)
-
-
-
-magiokis/vertel/
-................
-application code for the vertel app
-
-__init__.py
-    (empty) (sub)package indicator
-models.py
-    data definitions
-urls.py
-    urlconfs for vertel app
-views.py
-    processing code
-zetom.py
-    script for data conversion (not sure if used)
-    TODO: remove
 
 
 magiokis/templates/
@@ -101,20 +86,14 @@ index.html
 
 magiokis/templates/denk/
 ........................
-Denk.css
-    css for denk app - TODO: move to static/
 base_site.html
     customizing for denk app
 detail.html
     detail screen
-favicon.ico
-    site icon - TODO: move to static/, check if used
-index.html
-    start page for denk app - TODO: replace with start.html (in building response)
 input_args.html
-    ? TODO: check if used, if not remove
+    separate page for entering input (add trefwoord or enter search text)
 select_args.html
-    separate page to enter arguments for selection
+    separate page to enter arguments for selection (select trefwoord)
 select_list.html
     page to show selection
 start.html
@@ -141,6 +120,8 @@ regtype.html
     details on type(s) of notation registration
 series.html
     show defined collection of songs
+showreg.html
+    show notation sheets (pictures with possible pagination)
 song.html
     show details of song
 songlist.html
@@ -152,28 +133,41 @@ wijzig.html
 wijzigsongtekst.html
     edit song lyrics
 
+
 magiokis/templates/vertel/
 ..........................
 pages for the vertel app
 
-Vertel.css
-    stylesheet - TODO mode to static/
 base_site.html
     customization
 detail.html
     show story details
-detail_ro.html
-    edit story details
-favicon.ico
-    site icon - TODO: move to static/
-login_form.html
+login_form.html (not used)
     login as "narrator"
 select.html
     select (from) story collection
 start.html
     select action
-vertellers.html
+vertellers.html (not used)
     show "narrator"s
+
+
+magiokis/vertel/
+................
+application code for the vertel app
+
+__init__.py
+    (empty) (sub)package indicator
+models.py
+    data definitions
+urls.py
+    urlconfs for vertel app
+views.py
+    processing code
+zetom.py
+    script for data conversion (not sure if used)
+    TODO: remove
+
 
 static/ (not tracked)
 .......
