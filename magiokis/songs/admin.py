@@ -1,5 +1,7 @@
-import magiokis.songs.models as my
+"""Register Songs models to the site admin
+"""
 from django.contrib import admin
+import magiokis.songs.models as my
 
 admin.site.register(my.Auteur)
 admin.site.register(my.Maker)

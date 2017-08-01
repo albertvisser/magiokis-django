@@ -1,7 +1,11 @@
+"""script to copy data from the db
+for now just prints tem
+"""
 import sqlite3 as sql
-## inserten toch maar m.b.v. Django-API ##
 
-def get_dic(series,cur):
+
+def get_dic(series, cur):
+    "build dictionary for series"
     dic = {}
     for serie in series:
         dic[serie] = []
@@ -9,13 +13,13 @@ def get_dic(series,cur):
         dic[row[0]].append(row[1:])
     return dic
 
+
 class Copyover(object):
+    """Class containing functions necessary to get the data
+    """
     def __init__(self):
-        dbnaam = "/home/albert/www/django/magiokis/magiokis.db"
-        ## dbnaam = "/home/albert/www/django/magiokis/songs/songs.db"
+        dbnaam = "/home/albert/projects/magiokis-django/magiokis/magiokis.db"
         self.con = sql.connect(dbnaam)
-        #~ destdb = "/home/visser/django/pythoneer/magiokis.db"
-        #~ self.con2 = sql.connect(destdb)
 
     def tabellen(self):
         """
@@ -30,10 +34,10 @@ class Copyover(object):
         """
         cur = self.con.cursor()
         data = {}
-        for tabnaam in ("auteurs","makers","datums","plaatsen","bezettingen",
-            "instrumenten"):
+        for tabnaam in ("auteurs", "makers", "datums", "plaatsen", "bezettingen",
+                        "instrumenten"):
             cur.execute("SELECT * FROM " + tabnaam)
-            newid = 1
+            ## newid = 1
             data[tabnaam] = [row[1:] for row in cur]
         self.con.commit()
         return data
@@ -55,20 +59,19 @@ class Copyover(object):
         gegevens in tekstvorm
         """
         cur = self.con.cursor()
-        cur.execute('select '
-            'registraties.url, registraties.commentaar, '
-            'regtypes.naam, songs.titel '
-            'from registraties,songs,regtypes '
-            'where songs.id == registraties.song '
-            'and regtypes.id == registraties.type')
+        cur.execute('select registraties.url, registraties.commentaar, '
+                    'regtypes.naam, songs.titel from registraties, songs, regtypes '
+                    'where songs.id == registraties.song '
+                    'and regtypes.id == registraties.type')
         return [row for row in cur]
 
-    def songtekst(self,naam):
-        #~ read/write (nog) met elementtree
+    def songtekst(self):
+        """songtekst lezen gaat nog met elementtree, dus dit wordt niet gebruikt
+        """
         cur = self.con.cursor()
         cur.execute()
 
-    def song(self,naam=""):
+    def song(self):
         """
         leest de songs tabel en bouwt een lijst op met alle gerelateerde gegevens
         in tekstvorm
@@ -77,15 +80,13 @@ class Copyover(object):
         #! naam - rowid paren
         """
         cur = self.con.cursor()
-        cur.execute('select '
-            'songs.titel, auteurs.naam, makers.naam, songs.datering, '
-            'songs.datumtekst, songs.url, songs.commentaar '
-            'from songs '
-            'left outer join auteurs on auteurs.id == songs.tekst '
-            'left outer join makers on makers.id == songs.muziek')
+        cur.execute('select songs.titel, auteurs.naam, makers.naam, songs.datering, '
+                    'songs.datumtekst, songs.url, songs.commentaar from songs '
+                    'left outer join auteurs on auteurs.id == songs.tekst '
+                    'left outer join makers on makers.id == songs.muziek')
         return [row for row in cur]
 
-    def opname(self,naam=""):
+    def opname(self):
         """
         leest de tabellen opnameseries en opnames en bouwt per opnameserie
         een lijst op van opnames met alle gerelateerde gegevens in tekstvorm
@@ -96,20 +97,19 @@ class Copyover(object):
         cur.execute('select * from opnameseries where opname == ""')
         data = {}
         for row in cur:
-            data[row[0]] = (row[1:],[])
-        for id,serie in data.items():
+            data[row[0]] = (row[1:], [])
+        for id, serie in data.items():
             cur.execute('select * from opnameseries '
-                'where opname != "" and id == ?',(id,))
+                        'where opname != "" and id == ?', (id,))
             for row in cur:
                 serie[1].append(row[1])
-        cur.execute('select opnames.id, '
-            'plaatsen.naam, datums.naam, songs.titel, bezettingen.naam, '
-            'opnames.instrumenten, opnames.url, opnames.commentaar '
-            'from opnames '
-            'left outer join plaatsen on plaatsen.id == opnames.plaats '
-            'left outer join datums on datums.id == opnames.datum '
-            'left outer join songs on songs.id == opnames.song '
-            'left outer join bezettingen on bezettingen.id == opnames.bezetting')
+        cur.execute('select opnames.id, plaatsen.naam, datums.naam, songs.titel, '
+                    'bezettingen.naam, opnames.instrumenten, opnames.url, '
+                    'opnames.commentaar from opnames '
+                    'left outer join plaatsen on plaatsen.id == opnames.plaats '
+                    'left outer join datums on datums.id == opnames.datum '
+                    'left outer join songs on songs.id == opnames.song '
+                    'left outer join bezettingen on bezettingen.id == opnames.bezetting')
         songs = [row for row in cur]
         cur.execute('select * from instrumenten')
         instr = dict([row for row in cur])
@@ -147,34 +147,33 @@ class Copyover(object):
         cur.execute('select distinct id from songseries')
         series = [row[0] for row in cur]
         cur.execute('select * from songseries')
-        data['series'] = get_dic(series,cur)
-        cur.execute('select id,tekst from letters where song == ""')
+        data['series'] = get_dic(series, cur)
+        cur.execute('select id, tekst from letters where song == ""')
         series = [row for row in cur]
-        more_data.append([(x,y) for x,y in series])
+        more_data.append([(x, y) for x, y in series])
         series = [x[0] for x in series]
         cur.execute('select * from letters where song != ""')
-        data['letters'] = get_dic(series,cur)
+        data['letters'] = get_dic(series, cur)
         cur.execute('select id, tekst from jaren where song == ""')
         series = [row for row in cur]
-        more_data.append([(x,y) for x,y in series])
+        more_data.append([(x, y) for x, y in series])
         series = [x[0] for x in series]
         cur.execute('select * from jaren where song != ""')
-        data['jaren'] = get_dic(series,cur)
-        cur.execute('select id,titel from songs')
+        data['jaren'] = get_dic(series, cur)
+        cur.execute('select id, titel from songs')
         songdict = dict([row for row in cur])
         for item in data:
-            for key,songlist in data[item].items():
-                newlist = [(songdict[song],comment)
-                    for song,comment in songlist]
+            for key, songlist in data[item].items():
+                newlist = [(songdict[song], comment) for song, comment in songlist]
                 data[item][key] = newlist
         return data, more_data
 
 if __name__ == "__main__":
     test = Copyover()
-    #~ t = test.tabellen()
-    #~ for x,y in t.items():
-        #~ print x.join(('--- ',' ---'))
-        #~ print y
+    # t = test.tabellen()
+    # for x,y in t.items():
+    #     print x.join(('--- ',' ---'))
+    #     print y
     t = test.songlist()
     for x in t:
-        print x
+        print(x)

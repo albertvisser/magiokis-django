@@ -1,44 +1,48 @@
+"""Web views for Magiokis Songs Django version
+"""
 import string
 from django.template import RequestContext
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render_to_response, get_object_or_404
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+## from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render_to_response  # , get_object_or_404
+from django.http import HttpResponseRedirect  # Http404, HttpResponse
 from django.db.models import Q
 import magiokis.songs.models as my
 from magiokis.songs.getsongtekst import gettekst, updatetekst
-## import sys
-## sys.path.insert(0, '/home/albert/magiokis/data/songs')
-## from songtekst import Songtekst
+
 
 def index(request, melding=''):
+    """Landing page of webapp
+    """
     page_data = {"message": melding,
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start")]}
     page_data["title"] = "Start"
     if melding:
         page_data["message"] = melding
-    return render_to_response('songs/index.html',page_data)
+    return render_to_response('songs/index.html', page_data)
+
 
 def songlist(request, melding='', soort='', data=''):
+    """Page to build various lists of songs
+    """
     page_data = {"message": melding,
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('/songs/select/','select','select songs')]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     page_data["title"] = "Select: songs "
     # kolom met letters opbouwen
-    page_data['letterlijst'] = [x.letter for x in my.Letters.objects.all().order_by(
-        'letter')]
+    page_data['letterlijst'] = [x.letter for x in
+                                my.Letters.objects.all().order_by('letter')]
     #  kolom met jaren opbouwen
-    page_data["jarenlijst"] = [x.jaar for x in my.Jaren.objects.all().order_by(
-        'jaar')]
+    page_data["jarenlijst"] = [x.jaar for x in my.Jaren.objects.all().order_by('jaar')]
 
     try:
         incoming = request.GET
-    except:
+    except AttributeError:
         incoming = {}
     if 'select' in incoming:
         data = incoming['select']
-        #-- zorgen dat 1-letter- of -cijferige titelselecties behandeld worden als letterselecties
+        # zorgen dat 1-letter- of -cijferige titelselecties behandeld worden als letterselecties
         if soort == 'search':
             if data in list(string.punctuation):
                 data = "("
@@ -49,10 +53,10 @@ def songlist(request, melding='', soort='', data=''):
             elif data in list(string.ascii_letters):
                 soort = 'letter'
     if soort:
-        page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort, data),
-            soort,'select songs by %s' % soort))
+        page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort, data), soort,
+                                    'select songs by %s' % soort))
 
-    #-- songlijst met songs (id, titel, xx, yy) en lijstoms
+    # songlijst met songs (id, titel, xx, yy) en lijstoms
     if page_data["message"]:
         pass
     elif soort == "search":
@@ -63,12 +67,12 @@ def songlist(request, melding='', soort='', data=''):
         songslijst = my.Song.objects.filter(titel__istartswith=data)
     elif soort == "jaar":
         page_data["lijstoms"] = "uit jaar '%s'" % data
-        songslijst = my.Song.objects.filter(Q(datering__startswith=data[2:])|
-            Q(datering__contains="/"+data[2:]))
+        songslijst = my.Song.objects.filter(
+            Q(datering__startswith=data[2:]) | Q(datering__contains="/" + data[2:]))
     elif not soort:
         pass
     else:
-        page_data["message"] = "foute argumenten: soort=%s,data=%s" % (soort,data)
+        page_data["message"] = "foute argumenten: soort=%s,data=%s" % (soort, data)
 
     if soort and not page_data["message"]:
         page_data["soort"] = soort
@@ -79,67 +83,73 @@ def songlist(request, melding='', soort='', data=''):
             return HttpResponseRedirect("/songs/detail/{0}/".format(songslijst[0].id))
         page_data["songslijst"] = songslijst
 
-    return render_to_response('songs/songlist.html',page_data)
+    return render_to_response('songs/songlist.html', page_data)
+
 
 def series(request, melding='', item=''):
+    """Page to show a predefines list of songs
+    """
     try:
         incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
-    except:
+    except AttributeError:
         incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ("/songs/select/series/","select","select songserie")]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ("/songs/select/series/", "select", "select songserie")]}
     page_data["title"] = "Opnameseries"
     page_data["series"] = my.Songserie.objects.all().order_by('name')
 
     if item:
         data = my.Songserie.objects.get(pk=item)
-        page_data["crumbs"].append(("/songs/select/series/{0}".format(item),'serie',
-            'select song uit serie'))
+        page_data["crumbs"].append(("/songs/select/series/{0}".format(item), 'serie',
+                                    'select song uit serie'))
         page_data["title"] = "Songs uit verzameling"
         page_data["serienaam"] = data.name
         page_data["songs"] = data.song.all()
         page_data["comment"] = data.comment
-    return render_to_response('songs/series.html',page_data)
+    return render_to_response('songs/series.html', page_data)
+
 
 def detail(request, melding='', action='', item="", soort='', sel=''):
-    try:
-        incoming = request.GET
-    except:
-        incoming = {}
+    """Page to show details of a song
+    """
+    ## try:
+        ## incoming = request.GET
+    ## except:
+        ## incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('/songs/select/','select','select songs')]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', " songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     if soort:
         page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
-            '{}'.format(soort), 'select song'))
+                                    '{}'.format(soort), 'select song'))
         page_data['soort'] = soort
         page_data['sel'] = sel
     page_data["title"] = "Detail"
     if item:
-        page_data["crumbs"].append(('/songs/detail/%s/' % item,'detail',
-            'songs: song'))
+        page_data["crumbs"].append(('/songs/detail/%s/' % item, 'detail',
+                                    'songs: song'))
         if action == "edit":
             page_data["crumbs"].append(('/songs/detail/%s/edit/' % item,
-                'wijzig','songs: wijzig song'))
+                                        'wijzig', 'songs: wijzig song'))
         song = my.Song.objects.get(pk=item)
         page_data["song"] = song
         opnames = []
-        lijst = my.Opname.objects.filter(song=song.id).order_by('datum') # str(datum.naam))
+        lijst = my.Opname.objects.filter(song=song.id).order_by('datum')  # str(datum.naam))
         for item in lijst:
-            it= {'id': item.id,
-                'loc': ", ".join((item.plaats.naam,item.datum.naam)),
-                'url': item.url.join(('','.mp3'))}
+            it = {'id': item.id,
+                  'loc': ", ".join((item.plaats.naam, item.datum.naam)),
+                  'url': item.url.join(('', '.mp3'))}
             if item.bezetting:
                 oms = item.bezetting.naam
             else:
                 oms = ", ".join([ins.naam for ins in item.instrumenten.all()])
-            it['oms'] = "\n".join((oms,item.commentaar))
-            opnames.append((item.datum.waarde,it))
+            it['oms'] = "\n".join((oms, item.commentaar))
+            opnames.append((item.datum.waarde, it))
         opnames.sort(key=lambda x: x[0])
         page_data["opnames"] = [x[1] for x in opnames]
         registraties = my.Registratie.objects.filter(song=song.id).order_by('type')
@@ -156,10 +166,10 @@ def detail(request, melding='', action='', item="", soort='', sel=''):
         ## ds = Songtekst(item)
         ## ds.read()
         ## page_data["tekst"] = (ds.titel, '<br />'.join(ds.regels))
-        #~ return page_data
+        # return page_data
     elif action == "add":
-        page_data["crumbs"].append(('/songs/detail/nieuw','nieuwe tekst',
-            'songs: nieuw'))
+        page_data["crumbs"].append(('/songs/detail/nieuw', 'nieuwe tekst',
+                                    'songs: nieuw'))
     else:
         melding = "Fout in aansturing: geen item of action (add)"
 
@@ -168,38 +178,41 @@ def detail(request, melding='', action='', item="", soort='', sel=''):
     if action:
         page_data["auteurs"] = my.Auteur.objects.all().order_by("naam")
         page_data["makers"] = my.Maker.objects.all().order_by("naam")
-        return render_to_response('songs/wijzig.html',page_data,
-            context_instance = RequestContext(request))
+        return render_to_response('songs/wijzig.html', page_data,
+                                  context_instance=RequestContext(request))
     else:
-        return render_to_response('songs/song.html',page_data)
+        return render_to_response('songs/song.html', page_data)
+
 
 def wijzigdetail(request, melding='', item='', soort='', sel=''):
+    """Page to enter/modify details of a song
+    """
     try:
         incoming = request.POST
     except ValueError:
         incoming = {}
     else:
         melding = ''
-        titel = incoming.get("Titel",'')
-        auteurval = incoming.get("Tekst",'')
-        makerval = incoming.get("Muziek",'')
-        datering = incoming.get("Datering",'')
-        datumtekst = incoming.get("Datumtxt",'')
+        titel = incoming.get("Titel", '')
+        auteurval = incoming.get("Tekst", '')
+        makerval = incoming.get("Muziek", '')
+        datering = incoming.get("Datering", '')
+        datumtekst = incoming.get("Datumtxt", '')
         soort = incoming.get('soort', '')
         sel = incoming.get('sel', '')
-        opm = incoming.get("Opmerkingen",'')
+        opm = incoming.get("Opmerkingen", '')
 
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('/songs/select/','select','select songs')]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     if soort:
         page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
-            '{}'.format(soort), 'select song'))
-    page_data["crumbs"].append(('/songs/detail/%s/' % item,'detail',
-        'songs: song'))
-    #~ if datering == '':
-         #~ melding = "Wijzigen niet mogelijk: geen datering opgegeven"
+                                    '{}'.format(soort), 'select song'))
+    page_data["crumbs"].append(('/songs/detail/%s/' % item, 'detail',
+                                'songs: song'))
+    # if datering == '':
+    #      melding = "Wijzigen niet mogelijk: geen datering opgegeven"
 
     if not melding:
         if item:
@@ -216,33 +229,35 @@ def wijzigdetail(request, melding='', item='', soort='', sel=''):
         song.commentaar = opm
         song.save()
 
-    if soort: item = '/'.join((item, soort, sel))
+    if soort:
+        item = '/'.join((item, soort, sel))
     return HttpResponseRedirect('/songs/detail/{0}/'.format(item))
 
+
 def wijzigtekst(request, melding='', action='', item='', soort='', sel=''):
-    ## (r'^tekst/(?P<item>\d+)/(?P<action>(add|edit))/$',           'tekst'),
-    ## (r'^tekst/(?P<item>\d+)/update/$',                           'wijzigtekst'),
+    """Page to enter/modify the text of a song
+    """
     incoming = request.POST
-    titel = incoming.get("titel",'')
-    tekst = incoming.get("tekst",'')
-    fnaam = incoming.get("fnaam",'')
+    titel = incoming.get("titel", '')
+    tekst = incoming.get("tekst", '')
+    fnaam = incoming.get("fnaam", '')
     if not soort:
         soort = incoming.get('soort', '')
         sel = incoming.get('sel', '')
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('/songs/select/','select','select songs')]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     if soort:
         page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
-            '{}'.format(soort), 'select song'))
+                                    '{}'.format(soort), 'select song'))
         page_data['soort'] = soort
         page_data['sel'] = sel
         det_item = '/'.join((item, soort, sel))
     else:
         det_item = item
     page_data["crumbs"].append(('/songs/detail/%s/' % det_item, 'detail',
-        'songs: song'))
+                                'songs: song'))
     page_data["title"] = "Wijzigen songtekst"
     if not fnaam:
         song = my.Song.objects.get(pk=item)
@@ -260,50 +275,53 @@ def wijzigtekst(request, melding='', action='', item='', soort='', sel=''):
     page_data['id'] = item
 
     return render_to_response('songs/wijzigsongtekst.html', page_data,
-        context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
 
 
 def opnlist(request, melding='', item=""):
+    """Page to show a predefined collection of song recordings
+    """
     try:
         incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
-    except:
+    except AttributeError:
         incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('songs/select/opnames/','select','select opnameserie')]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('songs/select/opnames/', 'select', 'select opnameserie')]}
 
     page_data["title"] = "Opnameseries"
     page_data["series"] = my.Opnameserie.objects.all().order_by('naam')
     if item:
-        page_data["crumbs"].append((
-            'songs/select/opnames/{0}'.format(item),'opname',
-            'select opname uit serie'))
+        page_data["crumbs"].append(('songs/select/opnames/{0}'.format(item), 'opname',
+                                    'select opname uit serie'))
         data = my.Opnameserie.objects.get(id=item)
         page_data["title"] = "Opnames bij serie"
         page_data["serienaam"] = data.naam
         page_data["opnames"] = data.opname.all()
-    return render_to_response('songs/opnlist.html',page_data)
+    return render_to_response('songs/opnlist.html', page_data)
 
-def opname(request, melding='', item='', action ='', soort='', sel=''):
-    try:
-        incoming = request.GET
-    except:
-        incoming = {}
+
+def opname(request, melding='', item='', action='', soort='', sel=''):
+    """Page to show details of a song recording
+    """
+    ## try:
+        ## incoming = request.GET
+    ## except:
+        ## incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start', "songs: start"),
-                            ('/songs/select/','select','select songs'),
-                            ]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     if soort:
         page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
-            '{}'.format(soort), 'select song'))
+                                    '{}'.format(soort), 'select song'))
         page_data['soort'] = soort
         page_data['sel'] = sel
     page_data["title"] = "Detail Opname"
-    #~ page_data["melding"] = item
+    # page_data["melding"] = item
     if action == 'add':
         new_item = my.Opname()
         new_item.id = 0
@@ -315,7 +333,7 @@ def opname(request, melding='', item='', action ='', soort='', sel=''):
     if soort:
         songnr = '/'.join((str(songnr), soort, sel))
     page_data["crumbs"].append(('/songs/detail/{}'.format(songnr), 'detail',
-        page_data["opn"].song.titel))
+                                page_data["opn"].song.titel))
     page_data["songs"] = my.Song.objects.all().order_by("titel")
     page_data["plaatsen"] = my.Plaats.objects.all().order_by("naam")
     page_data["datums"] = my.Datum.objects.all().order_by("naam")
@@ -329,19 +347,22 @@ def opname(request, melding='', item='', action ='', soort='', sel=''):
     page_data["notins"] = [x for x in allins if x not in inslist]
     if melding:
         page_data['melding'] = melding
-    #~ return page_data
+    # return page_data
     return render_to_response('songs/opname.html', page_data,
-        context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
+
 
 def wijzigopname(request, melding='', item='', soort='', sel=''):
+    """Page to enter/modify a song recording
+    """
     incoming = request.POST
-    song = incoming.get('Song','')
-    plaats = incoming.get('Plaats','')
-    datum = incoming.get('Datum','')
-    bezetting = incoming.get('Bezet','')
-    inslist = incoming.get('instcodes','')
-    url = incoming.get('Url','')
-    opm = incoming.get('Opm','')
+    song = incoming.get('Song', '')
+    plaats = incoming.get('Plaats', '')
+    datum = incoming.get('Datum', '')
+    bezetting = incoming.get('Bezet', '')
+    inslist = incoming.get('instcodes', '')
+    url = incoming.get('Url', '')
+    opm = incoming.get('Opm', '')
     if not soort:
         soort = incoming.get('soort', '')
         sel = incoming.get('sel', '')
@@ -368,8 +389,7 @@ def wijzigopname(request, melding='', item='', soort='', sel=''):
 
     if melding:
         # je raakt zo wel al je al geselecteerde/ingevulde waarden kwijt
-        return HttpResponseRedirect('/songs/{}/opname/add/{}'.format(song,
-            melding))
+        return HttpResponseRedirect('/songs/{}/opname/add/{}'.format(song, melding))
 
     ## raise ValueError('Opvoeren nieuwe opname nog niet 100%')
     if item and item != '0':
@@ -394,44 +414,53 @@ def wijzigopname(request, melding='', item='', soort='', sel=''):
     opname.commentaar = opm
     opname.save()
 
-    if soort: item = '/'.join((item, soort, sel))
+    if soort:
+        item = '/'.join((item, soort, sel))
     return HttpResponseRedirect('/songs/opname/{0}/'.format(item))
 
+
 def playopname(request, melding='', item=''):
+    """play a song (not used due to using an embeded player)
+    """
     pass
 
+
 def reglist(request, melding='', item=''):
-    try:
-        incoming = request.GET
-    except:
-        incoming = {}
+    """Page to show a list of song registrations
+    """
+    ## try:
+        ## incoming = request.GET
+    ## except:
+        ## incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start")]}
     if item:
         naam = my.Regtype.objects.get(id=item).naam
         page_data["crumbs"].append((
-            '/songs/select/regs/{0}/'.format(item),'select',
+            '/songs/select/regs/{0}/'.format(item), 'select',
             'select regs van type'))
         page_data["serienaam"] = naam
         page_data["reglist"] = my.Registratie.objects.filter(type=item).order_by(
             'song__titel')
-        page_data["doe"] =  "Bekijk" if item == "5" else "Play"
+        page_data["doe"] = "Bekijk" if item == "5" else "Play"
     return render_to_response('songs/reglist.html', page_data)
 
-def reg(request='', melding='', item='', action ='', soort='', sel=''):
-    try:
-        incoming = request.GET
-    except:
-        incoming = {}
+
+def reg(request='', melding='', item='', action='', soort='', sel=''):
+    """Page to show details of a song registration
+    """
+    ## try:
+        ## incoming = request.GET
+    ## except:
+        ## incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start"),
-                            ('/songs/select/','select','select songs'),
-                            ]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start"),
+                            ('/songs/select/', 'select', 'select songs')]}
     if soort:
         page_data['crumbs'].append(('/songs/select/{}/{}/'.format(soort, sel),
-            '{}'.format(soort), 'select song'))
+                                    '{}'.format(soort), 'select song'))
         page_data['soort'] = soort
         page_data['sel'] = sel
     page_data["title"] = "Detail registratie"
@@ -447,18 +476,21 @@ def reg(request='', melding='', item='', action ='', soort='', sel=''):
     if soort:
         songnr = '/'.join((str(songnr), soort, sel))
     page_data["crumbs"].append(('/songs/detail/{}'.format(songnr), 'detail',
-        page_data["reg"].song.titel))
+                                page_data["reg"].song.titel))
     page_data["songs"] = my.Song.objects.all().order_by("titel")
     page_data["types"] = my.Regtype.objects.all()
     return render_to_response('songs/registratie.html', page_data,
-        context_instance = RequestContext(request))
+                              context_instance=RequestContext(request))
+
 
 def wijzigreg(request, melding='', item='', soort='', sel=''):
+    """Page to enter/modify details of a song regitration
+    """
     incoming = request.POST
-    song = incoming.get("Song","")
-    rtype = incoming.get("Type","")
-    url = incoming.get("Url","")
-    opm = incoming.get("Opm","")
+    song = incoming.get("Song", "")
+    rtype = incoming.get("Type", "")
+    url = incoming.get("Url", "")
+    opm = incoming.get("Opm", "")
     if not soort:
         soort = incoming.get('soort', '')
         sel = incoming.get('sel', '')
@@ -477,9 +509,7 @@ def wijzigreg(request, melding='', item='', soort='', sel=''):
     if item and item != '0':
         reg = my.Registratie.objects.get(pk=item)
     else:
-        reg = my.Registratie.objects.create(
-            type = my.Regtype.objects.get(pk=rtype)
-            )
+        reg = my.Registratie.objects.create(type=my.Regtype.objects.get(pk=rtype))
         item = reg.id
     if song:
         reg.song = my.Song.objects.get(pk=song)
@@ -489,10 +519,14 @@ def wijzigreg(request, melding='', item='', soort='', sel=''):
     reg.commentaar = opm
     reg.save()
 
-    if soort: item = '/'.join((item, soort, sel))
+    if soort:
+        item = '/'.join((item, soort, sel))
     return HttpResponseRedirect('/songs/reg/{0}/'.format(item))
 
-def showreg(request,melding='',item='', page=''):
+
+def showreg(request, melding='', item='', page=''):
+    """Show/play a song registration itself
+    """
     reg = my.Registratie.objects.get(pk=item)
     ## return HttpResponse("<html><head>{}</head><body><p>{}</p></body></html>".format(
         ## reg.song.titel, reg.type.id))
@@ -506,17 +540,20 @@ def showreg(request,melding='',item='', page=''):
     page_data = {'reg': reg, 'page': page, 'fnam': fnam, 'max': max}
     return render_to_response('songs/showreg.html', page_data)
 
-def tabel(request, melding='',soort=''):
-    try:
-        incoming = request.GET
-    except:
-        incoming = {}
+
+def tabel(request, melding='', soort=''):
+    """Page to show a supporting table
+    """
+    ## try:
+        ## incoming = request.GET
+    ## except:
+        ## incoming = {}
     page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+                 "crumbs": [('/', 'Home', 'Magiokis'),
+                            ('/songs/', 'start', "songs: start")]}
     if soort:
         page_data["crumbs"].append(("/songs/tabel/{0}/".format(soort),
-            'tabel','toon/wijzig tabel'))
+                                    'tabel', 'toon/wijzig tabel'))
         page_data["title"] = "Tabellenbeheer: " + soort
         page_data["tabsoort"] = soort
         if soort == "Auteur":
@@ -536,29 +573,31 @@ def tabel(request, melding='',soort=''):
             data = my.Regtype.objects.all().order_by("naam")
         page_data["tabel"] = data
     if soort == "Regtype":
-        return render_to_response('songs/regtype.html',page_data,
-            context_instance = RequestContext(request))
+        return render_to_response('songs/regtype.html', page_data,
+                                  context_instance=RequestContext(request))
     else:
-        return render_to_response('songs/tabel.html',page_data,
-            context_instance = RequestContext(request))
+        return render_to_response('songs/tabel.html', page_data,
+                                  context_instance=RequestContext(request))
 
-def wijzigtabel(request, melding='',soort='',item=''):
+
+def wijzigtabel(request, melding='', soort='', item=''):
+    """Page to enter/modify lines of a supporting table
+    """
     try:
         incoming = request.POST
-    except:
+    except AttributeError:
         incoming = {}
-    naam = incoming.get("txtNaam",'')
+    naam = incoming.get("txtNaam", '')
     if soort == 'Regtype':
-        pad = incoming.get("txtPad",'')
-        htmlpad = incoming.get("txtHTMLPad",'')
-        player = incoming.get("txtPlayer",'')
-        editor = incoming.get("txtEditor",'')
+        pad = incoming.get("txtPad", '')
+        htmlpad = incoming.get("txtHTMLPad", '')
+        player = incoming.get("txtPlayer", '')
+        editor = incoming.get("txtEditor", '')
     else:
-        waarde = incoming.get("txtWaarde",'')
-    #~ return HttpResponse("<br/>".join(incoming.values()))
-    page_data = {"message": "",
-                "crumbs": [('/', 'Home', 'Magiokis'),
-                            ('/songs/','start',"songs: start")]}
+        waarde = incoming.get("txtWaarde", '')
+    ## page_data = {"message": "",
+    ##              "crumbs": [('/', 'Home', 'Magiokis'),
+    ##                         ('/songs/', 'start', "songs: start")]}
 
     if soort == "Auteur":
         if item:

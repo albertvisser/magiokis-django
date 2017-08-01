@@ -1,13 +1,19 @@
-# getsongtekst.py
+"""getsongtekst.py
+
+read/update songtekst from external (XML) storage
+"""
 import os
 import shutil
 import xml.etree.ElementTree as et
 ROOT = "/home/albert/magiokis/data/zing"
 
+
 def gettekst(name):
+    """read songtekst from XML file
+    """
     file = os.path.join(ROOT.encode('utf-8'), name.encode('utf-8'))
     if not os.path.exists(file):
-        return [file,""]
+        return [file, ""]
     tree = et.ElementTree(file=file)
     rt = tree.getroot()
     titel = tekst = ""
@@ -21,7 +27,10 @@ def gettekst(name):
                     tekst += subel.text + "\n"
     return titel, tekst
 
+
 def updatetekst(name, titel, tekst):
+    """write songtekst back to XML file
+    """
     file = os.path.join(ROOT, name)
     tree = et.ElementTree(file=file)
     root = et.Element('songtekst')
@@ -29,15 +38,15 @@ def updatetekst(name, titel, tekst):
     new.text = titel
     regels = tekst.split('\n')
     if regels[0].strip() != '':
-        cpl = et.SubElement(root,'couplet')
+        cpl = et.SubElement(root, 'couplet')
     if regels[-1].strip() == '':
         regels = regels[:-1]
     for inp in regels:
         inp = inp.strip()
         if inp == '':
-            cpl = et.SubElement(root,'couplet')
+            cpl = et.SubElement(root, 'couplet')
         else:
-            rgl = et.SubElement(cpl,'regel')
+            rgl = et.SubElement(cpl, 'regel')
             rgl.text = inp
     tree = et.ElementTree(root)
     ## try:
