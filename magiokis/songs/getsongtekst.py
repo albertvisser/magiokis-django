@@ -2,19 +2,19 @@
 
 read/update songtekst from external (XML) storage
 """
-import os
+import pathlib
 import shutil
 import xml.etree.ElementTree as et
-ROOT = "/home/albert/magiokis/data/zing"
+ROOT = pathlib.Path("/home/albert/magiokis/data/zing")
 
 
 def gettekst(name):
     """read songtekst from XML file
     """
-    file = os.path.join(ROOT.encode('utf-8'), name.encode('utf-8'))
-    if not os.path.exists(file):
+    file = ROOT / name  # os.path.join(ROOT.encode('utf-8'), name.encode('utf-8'))
+    if not file.exists():
         return [file, ""]
-    tree = et.ElementTree(file=file)
+    tree = et.ElementTree(file=str(file))
     rt = tree.getroot()
     titel = tekst = ""
     for element in list(rt):
@@ -31,7 +31,7 @@ def gettekst(name):
 def updatetekst(name, titel, tekst):
     """write songtekst back to XML file
     """
-    file = os.path.join(ROOT, name)
+    file = str(ROOT / name)
     tree = et.ElementTree(file=file)
     root = et.Element('songtekst')
     new = et.SubElement(root, 'titel')

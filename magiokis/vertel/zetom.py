@@ -2,7 +2,7 @@
 """
 from __future__ import print_function
 
-import os
+import pathlib
 ## import xml.etree.ElementTree as et
 import lxml.etree as et
 
@@ -45,7 +45,7 @@ for x in verhalen.findall("verhaal"):
     z4 = et.SubElement(y, "field", type="DateTimeField", name="datum_afgemaakt")
     z5 = et.SubElement(z4, "None")
     et.SubElement(cat_dict[cat_id], "object", pk=verhaal_id)
-    if os.path.splitext(verhaal_data)[1] != '.xml':
+    if pathlib.Path(verhaal_data).suffix != '.xml':
         print('niet geparsed:', verhaal_data)
         continue
 

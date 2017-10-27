@@ -1,7 +1,7 @@
 # Django settings for magiokis project.
 
-import os
-HERE = os.path.abspath(os.path.dirname(__file__))
+import pathlib
+HERE = pathlib.Path(__file__).parent.resolve()
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -41,7 +41,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(HERE, 'templates'),
+            str(HERE / 'templates'),
          ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -71,7 +71,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(HERE, 'magiokis.db'),
+        'NAME': str(HERE / 'magiokis.db'),
         'USER': '',             # Not used with sqlite3.
         'PASSWORD': '',         # Not used with sqlite3.
         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
@@ -106,7 +106,7 @@ USE_TZ = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(HERE, 'magiokis/')
+MEDIA_ROOT = str(HERE / 'magiokis/')
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"

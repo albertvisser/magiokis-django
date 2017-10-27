@@ -1,6 +1,6 @@
 """Data object definities voor Songs database
 """
-import os
+import pathlib
 from django.db import models
 
 
@@ -201,7 +201,7 @@ class Registratie(models.Model):
     def play(self):
         if self.type == '5':
             return 'mmap'
-        result = os.path.splitext(self.url)[1][1:].lower()
+        result = pathlib.Path(self.url).suffix[1:].lower()
         if self.type == '7':
             result += '/oud'
         return result
