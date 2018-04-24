@@ -1,5 +1,6 @@
 {% extends "songs/base_site.html" %}
 {% load extratags %}
+{% block extrahead %}<script src="/static/play.js"></script>{% endblock %}
 {% block content-data %}
 <form action="/songs/select/opnames/" method="get">
 <select name="select" onchange="form.submit()">
@@ -18,13 +19,13 @@
     <tr><th>&nbsp;</th><th>Titel</th><th>Datering</th><th>Beschrijving</th></tr>
     {% for opn in opnames %}
     <tr>
-        <td><!-- <a href="/mp3/{{opn.url|lower}}.mp3">[Play]</a>
-        <a href="/songs/opname/play/{{opn.url}}/">[Play]</a> -->
-        <object type="application/x-shockwave-flash" data="http://local.magiokis.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl/mp3/{{opn.url|lower}}.mp3&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&"  width="20" height="20">
-            <param name="movie" value="http://local.magiois.nl/xspf_player/button/musicplayer.swf?song_url=http://data.magiokis.nl//mp3/{{opn.url|lower}}.mp3&b_bgcolor=cccccc&b_fgcolor=666666&b_colors=ff0000,0000ff,00ff00,000000&" />
-            <img src="http://local.magiokis.nl/xspf_player/noflash.gif" alt="Play"width="20" height="20" />
-        </object></td>
-        <td><a href="/songs/opname/{{opn.id}}">{% if opn.song %}{{opn.song}}{% else %}{{opn.titel|default:"(untitled)"}}{% endif %}</a></td>
+        <td>
+            <audio id="play_{{forloop.counter}}" src="http://data.magiokis.nl/mp3/{{opn.url|lower}}.mp3"></audio>
+            <input type="button" id="pb_{{forloop.counter}}" onclick ="play_or_pause('{{forloop.counter}}')" value="Play" />
+        </td>
+        <td><a href="/songs/opname/{{opn.id}}">
+            {% if opn.song %}{{opn.song}}{% else %}{{opn.titel|default:"(untitled)"}}{% endif %}
+        </a></td>
         <td>{{opn.datum|nbrk}}</td>
         <td>{{opn.commentaar}}</td>
     </tr>
