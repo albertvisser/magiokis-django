@@ -23,24 +23,24 @@ def index(request, melding=''):
 def doe(request, melding='', wat_te_doen=''):
     """Dispatcher view
     """
-    try:
+    if request.method == 'POST':
         incoming = request.POST
-    except AttributeError:
+    else:
         incoming = {}
     ## if 'txtUser' in incoming:
         ## verteller = incoming["txtUser"]
     if wat_te_doen == '':
-        wat_te_doen = incoming["rbsel"]
+        wat_te_doen = incoming.get("rbsel", '')
     if wat_te_doen == "selCat":
         return HttpResponseRedirect("/vertel/select/cat/")
     elif wat_te_doen == "selZoek":
-        zoekdata = incoming["txtZoek"]
+        zoekdata = incoming.get("txtZoek", '')
         return HttpResponseRedirect("/vertel/select/zoek/%s/" % zoekdata)
     elif wat_te_doen == "nweTekst":
         return HttpResponseRedirect("/vertel/detail/nieuw/")
     elif wat_te_doen != "nweCat":
         return Http404
-    nwe_cat = incoming["txtNweCat"]
+    nwe_cat = incoming.get("txtNweCat", '')
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/vertel/', 'start', "vertel: start")]}
@@ -74,8 +74,7 @@ def selcat(request, zoekdata="", melding=''):
     if melding:
         page_data["message"] = melding
     gevonden = ''
-    if "lbSelCat" in incoming:
-        zoekdata = incoming["lbSelCat"]
+    zoekdata = incoming.get("lbSelCat", '')
     if zoekdata:
         page_data["crumbs"].append(('/vertel/select/cat/%s' % zoekdata,
                                     'kies tekst', 'vertel: selCat'))
@@ -109,8 +108,7 @@ def selzoek(request, zoekdata='', melding=''):
     if melding:
         page_data["message"] = melding
     gevonden = ''
-    if "txtZoek" in incoming:
-        zoekdata = incoming["txtZoek"]
+    zoekdata = incoming.get("txtZoek")
     if zoekdata:
         page_data["zoek"] = zoekdata
         page_data["items"] = my.Verhaal.objects.filter(titel__icontains=zoekdata)
@@ -178,12 +176,11 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
             page_data["hslijst"] = h.hoofdstukken.all()
             page_data["auteur"] = str(h.schrijver)
             return render_to_response('vertel/detail_ro.html', page_data)
-        if "selHoofdstuk" in incoming:
-            hstuk = incoming["selHoofdstuk"]
+        hstuk = incoming.get("selHoofdstuk", '')
         if actie == "wijzig":
             if hstuk:  # hoofdstuk opvoeren/wijzigen
-                titel = incoming["txtTitel2"]
-                inhoud = incoming["txtHoofdstuk"]
+                titel = incoming.get("txtTitel2", '')
+                inhoud = incoming.get("txtHoofdstuk", '')
                 verhaal = my.Verhaal.objects.get(id=item)
                 if hstuk == '0':
                     h = my.Hoofdstuk.objects.create(titel=titel,
@@ -195,8 +192,8 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
                     h.inhoud = inhoud
                     h.save()
             else:  # verhaal opvoeren/wijzigen
-                titel = incoming["txtTitel"]
-                cat = incoming["lbSelCat"]
+                titel = incoming.get("txtTitel", '')
+                cat = incoming.get(["lbSelCat", '')
                 aut = my.Verteller.objects.all()[0]
                 if item == '0':
                     h = my.Verhaal(titel=titel, schrijver=aut)

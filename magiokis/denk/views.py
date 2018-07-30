@@ -28,6 +28,7 @@ def select(request, option='', trefw=None, data=None):
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/denk/', 'start', "denk: start")]}
     page_data["title"] = "Select " + option
+    input_dict = request.GET if request.method == 'GET' else {}
     selectie = []
     if option == 'all':
         page_data["crumbs"].append((request.path, "alle teksten", "denk: alle teksten"))
@@ -40,7 +41,7 @@ def select(request, option='', trefw=None, data=None):
         page_data["crumbs"].append((request.path, "selectie",
                                     "denk: teksten bij trefwoord"))
         if trefw is None:
-            trefw = request.GET["lbSelItem"]
+            trefw = input_dict.get("lbSelItem", '')
         data = my.Trefw.objects.get(id=trefw)
         titel = 'Overzicht bedenksels bij trefwoord "%s"' % data
         page_data["hier"] = 'trefw/%s/' % trefw
@@ -49,7 +50,7 @@ def select(request, option='', trefw=None, data=None):
         page_data["crumbs"].append(('/denk/enter/zoek1', "op titel", "denk: zoeken in titel "))
         page_data["crumbs"].append((request.path, "selectie", "denk: teksten op titeldeel "))
         if data is None:
-            data = request.GET["txtInput"]
+            data = input_dict.get("txtInput", '')
         titel = 'Overzicht bedenksels met "%s" in titel' % data
         page_data["hier"] = 'zoek1/%s/' % data
         selectie = my.Denksel.objects.filter(titel__icontains=data)
@@ -57,7 +58,7 @@ def select(request, option='', trefw=None, data=None):
         page_data["crumbs"].append(('/denk/enter/zoek2', "op tekst", "denk: zoeken in tekst"))
         page_data["crumbs"].append((request.path, "selectie", "denk: teksten op tekstdeel"))
         if data is None:
-            data = request.GET["txtInput"]
+            data = input_dict.get("txtInput", '')
         titel = 'Overzicht bedenksels met "%s" in tekst' % data
         page_data["hier"] = 'zoek2/%s/' % data
         selectie = my.Denksel.objects.filter(tekst__icontains=data)
@@ -95,7 +96,7 @@ def enter(request, option='', tekst=''):
     elif option in ('nieuw', 'add'):
         page_data["rest"] = my.Trefw.objects.all().order_by('woord')
         if option == 'add':
-            nw_trefw = request.POST['txtInput']
+            nw_trefw = request.POST.get('txtInput', '') if request.method == 'POST' else ''
             dubbel = True
             try:
                 my.Trefw.objects.get(woord=nw_trefw)
@@ -165,17 +166,17 @@ def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
         page_data["crumbs"].append(('/denk/enter/zoek2', "op tekst", "denk: zoeken in tekst"))
         page_data["crumbs"].append(('/denk/select/zoek2/%s' % seldata, "selectie",
                                     "denk: teksten op tekstdeel"))
-    if "lbSelItem" in request.POST:
-        denk_id = request.POST["lbSelItem"]
-    if "hselItem" in request.POST:
-        denk_id = request.POST["hselItem"]
-    if "txtTitel" in request.POST:
-        denk_titel = request.POST["txtTitel"]
-    if "txtTekst" in request.POST:
-        denk_tekst = request.POST["txtTekst"]
-    if "txtTrefw" in request.POST:
-        h = request.POST["txtTrefw"]
-        denk_trefw = h.split("$#$") if h != '' else []
+    if request.method == 'POST':
+        argdict = request.POST
+    else:
+        argdict = {}
+    denk_id = argdict.get("lbSelItem", '')
+    if not denk_id:
+        denk_id = argdict.get("hselItem", '')
+    denk_titel = argdict.get("txtTitel", '')
+    denk_tekst = argdict.get("txtTekst", '')
+    h = argdict.get("txtTrefw", '')
+    denk_trefw = h.split("$#$") if h else []
 
     page_data["title"] = "Detail " + option
     if option == 'ok':
@@ -187,7 +188,7 @@ def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
         page_data["trefw_ex"] = my.Trefw.objects.all()
         # denk_id = 0
     else:
-        if option == 'add':
+        if option == 'add' and (denk_titel or denk_tekst):
             d = my.Denksel.objects.create(titel=denk_titel, tekst=denk_tekst)
             d.trefwoorden.clear()
             for x in denk_trefw:
