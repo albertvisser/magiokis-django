@@ -167,7 +167,8 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
     else:
         # moet iets verder uitgesplitst worden i.v.m. de verschillende hoofdstukken
         r_o_opt = "" if r_o else "lees"
-        text = "wijzig tekst" if r_o else "bekijk tekst"
+        text = "wijzig" if r_o else "bekijk"
+        text = "naar `{} tekst`".format(text)
         page_data["crumbs"].append(('/vertel/detail/{}{}/{}'.format(item, extra, r_o_opt),
                                     text, 'vertel: tekst'))
         if r_o:
@@ -193,7 +194,7 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
                     h.save()
             else:  # verhaal opvoeren/wijzigen
                 titel = incoming.get("txtTitel", '')
-                cat = incoming.get(["lbSelCat", '')
+                cat = incoming.get("lbSelCat", '')
                 aut = my.Verteller.objects.all()[0]
                 if item == '0':
                     h = my.Verhaal(titel=titel, schrijver=aut)
