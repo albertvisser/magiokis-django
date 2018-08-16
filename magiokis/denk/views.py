@@ -27,7 +27,7 @@ def select(request, option='', trefw=None, data=None):
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/denk/', 'start', "denk: start")]}
-    page_data["title"] = "Select " + option
+    page_data["title"] = "Select by " + option
     input_dict = request.GET if request.method == 'GET' else {}
     selectie = []
     if option == 'all':
@@ -46,21 +46,21 @@ def select(request, option='', trefw=None, data=None):
         titel = 'Overzicht bedenksels bij trefwoord "%s"' % data
         page_data["hier"] = 'trefw/%s/' % trefw
         selectie = my.Denksel.objects.filter(trefwoorden=trefw)
-    elif option == 'zoek1':
-        page_data["crumbs"].append(('/denk/enter/zoek1', "op titel", "denk: zoeken in titel "))
+    elif option == 'titel':
+        page_data["crumbs"].append(('/denk/enter/titel', "op titel", "denk: zoeken in titel "))
         page_data["crumbs"].append((request.path, "selectie", "denk: teksten op titeldeel "))
         if data is None:
             data = input_dict.get("txtInput", '')
         titel = 'Overzicht bedenksels met "%s" in titel' % data
-        page_data["hier"] = 'zoek1/%s/' % data
+        page_data["hier"] = 'titel/%s/' % data
         selectie = my.Denksel.objects.filter(titel__icontains=data)
-    elif option == 'zoek2':
-        page_data["crumbs"].append(('/denk/enter/zoek2', "op tekst", "denk: zoeken in tekst"))
+    elif option == 'tekst':
+        page_data["crumbs"].append(('/denk/enter/tekst', "op tekst", "denk: zoeken in tekst"))
         page_data["crumbs"].append((request.path, "selectie", "denk: teksten op tekstdeel"))
         if data is None:
             data = input_dict.get("txtInput", '')
         titel = 'Overzicht bedenksels met "%s" in tekst' % data
-        page_data["hier"] = 'zoek2/%s/' % data
+        page_data["hier"] = 'tekst/%s/' % data
         selectie = my.Denksel.objects.filter(tekst__icontains=data)
     else:
         return HttpResponse('"%(option)s" niet gedefinieerd bij "%(where)s"')
@@ -78,20 +78,20 @@ def enter(request, option='', tekst=''):
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/denk/', 'start', "denk: start")],
                  "rest": ""}
-    page_data["title"] = "Enter " + option
+    page_data["title"] = "Enter Search Argument" # + option
     page_data["reqtype"] = 'get'
     if option == 'trefw':
         page_data["crumbs"].append((request.path, "op trefwoord", "denk: enter trefwoord"))
         titel = "Kies een trefwoord uit de lijst"
         page_data["selection"] = my.Trefw.objects.all().order_by('woord')
-    elif option in ('zoek1', 'zoek2'):
-        if option == 'zoek1':
+    elif option in ('titel', 'tekst'):
+        if option == 'titel':
             page_data["crumbs"].append((request.path, "op titel", "denk: zoeken in titel "))
         else:
             page_data["crumbs"].append((request.path, "op tekst", "denk: zoeken in tekst"))
         page_data["next"] = '/denk/select/%s/' % option
         titel = "Geef een zoektekst op"
-        zoek_in = 'titel' if option == 'zoek1' else 'tekst'
+        zoek_in = 'titel' if option == 'titel' else 'tekst'
         page_data["subtext"] = "Zoek in %s" % zoek_in
     elif option in ('nieuw', 'add'):
         page_data["rest"] = my.Trefw.objects.all().order_by('woord')
