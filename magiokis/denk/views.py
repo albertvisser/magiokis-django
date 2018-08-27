@@ -143,7 +143,7 @@ def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
                             ('/denk/', 'start', "denk: start")],
                  "knoptekst": "Nieuwe opvoeren"}
     ## data = request.path.split('/')
-    denk_id = tekst
+    denk_id = int(tekst)
     if not seltype and "hselopt" in request.POST:  # moet dit 'selopt' in request.GET worden?
         test = request.POST["hselopt"].split("/")
         seltype = test[0]
@@ -168,15 +168,18 @@ def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
                                     "denk: teksten op tekstdeel"))
     if request.method == 'POST':
         argdict = request.POST
-    else:
-        argdict = {}
-    denk_id = argdict.get("lbSelItem", '')
-    if not denk_id:
-        denk_id = argdict.get("hselItem", '')
-    denk_titel = argdict.get("txtTitel", '')
-    denk_tekst = argdict.get("txtTekst", '')
-    h = argdict.get("txtTrefw", '')
-    denk_trefw = h.split("$#$") if h else []
+    # elif request.method == 'GET':
+    #     argdict = request.GET
+    # else:
+    #     argdict = {}
+    # if argdict:
+        denk_id = argdict.get("lbSelItem", '')
+        if not denk_id:
+            denk_id = argdict.get("hselItem", '')
+        denk_titel = argdict.get("txtTitel", '')
+        denk_tekst = argdict.get("txtTekst", '')
+        h = argdict.get("txtTrefw", '')
+        denk_trefw = h.split("$#$") if h else []
 
     page_data["title"] = "Detail " + option
     if option == 'ok':
