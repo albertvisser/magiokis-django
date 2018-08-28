@@ -140,22 +140,23 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/vertel/', 'start', "vertel: start")]}
+    extra = data + '/' if data else ''
     if rubr == "cat":
         page_data["crumbs"].append(('/vertel/select/cat/', 'kies categorie',
                                     'vertel: selCat'))
-        page_data["crumbs"].append(('/vertel/select/cat/%s' % data, 'kies tekst',
-                                    'vertel: selCat'))
+        page_data["crumbs"].append(('/vertel/select/cat/%s' % extra, 'kies tekst',
+                                    'vertel: selText'))
         page_data["cat"] = int(data)
         extra = "/cat/{0}".format(data)
     elif rubr == 'titel':
-        page_data["crumbs"].append(('/vertel/select/zoek/%s/' % data, 'lijst teksten',
+        page_data["crumbs"].append(('/vertel/select/zoek/%s' % extra, 'lijst teksten',
                                     'vertel: selZoek'))
         page_data["nwe_titel"] = data
         extra = "/titel/{0}".format(data)
     else:
         extra = ""
     if item == "nieuw":
-        page_data["crumbs"].append(('/vertel/detail{}/nieuw'.format(extra),
+        page_data["crumbs"].append(('/vertel/detail{}/nieuw/'.format(extra),
                                     'nieuwe tekst', 'vertel: nieuw'))
         # toon leeg scherm
     ## elif item == "add":
@@ -168,7 +169,7 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
         ## page_data["crumbs"].append(('/vertel/detail/%s/' % item,'tekst','vertel: tekst'))
     else:
         # moet iets verder uitgesplitst worden i.v.m. de verschillende hoofdstukken
-        r_o_opt = "" if r_o else "lees"
+        r_o_opt = "" if r_o else "lees/"
         text = "wijzig" if r_o else "bekijk"
         text = "naar `{} tekst`".format(text)
         page_data["crumbs"].append(('/vertel/detail/{}{}/{}'.format(item, extra, r_o_opt),
