@@ -98,8 +98,10 @@ def selzoek(request, zoekdata='', melding=''):
         incoming = request.GET
     elif request.method == 'POST':
         incoming = request.POST
-    else:
-        incoming = {}
+    # else:
+    #     incoming = {}
+    if incoming:
+        zoekdata = incoming.get("txtZoek")
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/vertel/', 'start', "vertel: start")]}
@@ -109,7 +111,6 @@ def selzoek(request, zoekdata='', melding=''):
     if melding:
         page_data["message"] = melding
     gevonden = ''
-    zoekdata = incoming.get("txtZoek")
     if zoekdata:
         page_data["zoek"] = zoekdata
         page_data["items"] = my.Verhaal.objects.filter(titel__icontains=zoekdata)
