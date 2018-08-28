@@ -63,8 +63,10 @@ def selcat(request, zoekdata="", melding=''):
         incoming = request.GET
     elif request.method == 'POST':
         incoming = request.POST
-    else:
-        incoming = {}
+    # else:
+    #     incoming = {}
+    if incoming:
+        zoekdata = incoming.get("lbSelCat", '')
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/vertel/', 'start', "vertel: start")]}
@@ -74,9 +76,8 @@ def selcat(request, zoekdata="", melding=''):
     if melding:
         page_data["message"] = melding
     gevonden = ''
-    zoekdata = incoming.get("lbSelCat", '')
     if zoekdata:
-        page_data["crumbs"].append(('/vertel/select/cat/%s' % zoekdata,
+        page_data["crumbs"].append(('/vertel/select/cat/%s/' % zoekdata,
                                     'kies tekst', 'vertel: selCat'))
         cat = my.Bundel.objects.get(id=zoekdata)
         page_data["items"] = my.Verhaal.objects.filter(bundel=zoekdata)
