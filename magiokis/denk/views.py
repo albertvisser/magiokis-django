@@ -1,8 +1,7 @@
 ﻿"""Web views for Magiokis Denk Django version
 """
-from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response  # , get_object_or_404
+from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 import magiokis.denk.models as my
 
@@ -18,7 +17,7 @@ def index(request, trefw=None):
         page_data["message"] = 'trefwoord "%s" is opgevoerd' % trefw
     else:
         page_data["message"] = ""
-    return render_to_response('denk/start.html', page_data)
+    return render(request, 'denk/start.html', page_data)
 
 
 def select(request, option='', trefw=None, data=None):
@@ -68,7 +67,7 @@ def select(request, option='', trefw=None, data=None):
     page_data['selection'] = selectie
     if len(selectie) == 0:
         page_data["message"] = '(Nog) geen bedenksels aanwezig'
-    return render_to_response('denk/select_list.html', page_data)
+    return render(request, 'denk/select_list.html', page_data)
 
 
 def enter(request, option='', tekst=''):
@@ -78,7 +77,7 @@ def enter(request, option='', tekst=''):
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/denk/', 'start', "denk: start")],
                  "rest": ""}
-    page_data["title"] = "Enter Search Argument" # + option
+    page_data["title"] = "Enter Search Argument"  # + option
     page_data["reqtype"] = 'get'
     if option == 'trefw':
         page_data["crumbs"].append((request.path, "op trefwoord", "denk: enter trefwoord"))
@@ -128,11 +127,8 @@ def enter(request, option='', tekst=''):
     else:
         return HttpResponse('"%(option)s" niet gedefinieerd bij "%(where)s"')
     page_data['subtitle'] = titel
-    if option == "trefw":
-        return render_to_response('denk/select_args.html', page_data)
-    else:
-        return render_to_response('denk/input_args.html', page_data,
-                                  context_instance=RequestContext(request))
+    page = 'denk/select_args.html' if option == "trefw" else 'denk/input_args.html'
+    return render(request, page, page_data)
 
 
 def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
@@ -217,5 +213,4 @@ def detail(request, tekst='', option='', seltype='', seldata='', trefw=''):
         page_data["trefw_in"] = trefw
         page_data["trefw_ex"] = [x for x in my.Trefw.objects.all() if x not in trefw]
     page_data["crumbs"].append(('/denk/detail/%s/' % denk_id, 'tekst', 'deze tekst'))
-    return render_to_response('denk/detail.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'denk/detail.html', page_data)

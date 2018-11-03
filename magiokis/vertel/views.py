@@ -1,9 +1,8 @@
 """Web views for Magiokis Songs Django version
 """
-from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseRedirect   # HttpResponse,
-from django.shortcuts import render_to_response  # , get_object_or_404
+from django.shortcuts import render  # , get_object_or_404
 import magiokis.vertel.models as my
 
 
@@ -16,8 +15,7 @@ def index(request, melding=''):
     page_data["title"] = "Start"
     if melding:
         page_data["message"] = melding
-    return render_to_response('vertel/start.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'vertel/start.html', page_data)
 
 
 def doe(request, melding='', wat_te_doen=''):
@@ -53,7 +51,7 @@ def doe(request, melding='', wat_te_doen=''):
         page_data["message"] = nwe_cat.join(('nieuwe categorie "', '" opgevoerd'))
     else:
         page_data["message"] = nwe_cat.join(('categorie "', '" bestaat al'))
-    return render_to_response('vertel/start.html', page_data)
+    return render(request, 'vertel/start.html', page_data)
 
 
 def selcat(request, zoekdata="", melding=''):
@@ -88,7 +86,7 @@ def selcat(request, zoekdata="", melding=''):
         page_data["data"] = zoekdata
     page_data['aantal'] = gevonden
     page_data['bij'] = 'bij deze categorie'
-    return render_to_response('vertel/select.html', page_data)
+    return render(request, 'vertel/select.html', page_data)
 
 
 def selzoek(request, zoekdata='', melding=''):
@@ -122,7 +120,7 @@ def selzoek(request, zoekdata='', melding=''):
         page_data["data"] = zoekdata
     page_data['aantal'] = gevonden
     page_data['bij'] = ''
-    return render_to_response('vertel/select.html', page_data)
+    return render(request, 'vertel/select.html', page_data)
 
 
 def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='',
@@ -179,7 +177,7 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
             page_data["verhaal"] = h
             page_data["hslijst"] = h.hoofdstukken.all()
             page_data["auteur"] = str(h.schrijver)
-            return render_to_response('vertel/detail_ro.html', page_data)
+            return render(request, 'vertel/detail_ro.html', page_data)
         hstuk = incoming.get("selHoofdstuk", '')
         if actie == "wijzig":
             if hstuk:  # hoofdstuk opvoeren/wijzigen
@@ -228,5 +226,4 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
     if melding:
         page_data["message"] = melding
     page_data["cats"] = my.Bundel.objects.all()
-    return render_to_response('vertel/detail.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'vertel/detail.html', page_data)

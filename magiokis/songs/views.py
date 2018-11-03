@@ -1,9 +1,8 @@
 """Web views for Magiokis Songs Django version
 """
 import string
-from django.template import RequestContext
 ## from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render_to_response  # , get_object_or_404
+from django.shortcuts import render
 from django.http import HttpResponseRedirect  # Http404, HttpResponse
 from django.db.models import Q
 import magiokis.songs.models as my
@@ -19,7 +18,7 @@ def index(request, melding=''):
     page_data["title"] = "Start"
     if melding:
         page_data["message"] = melding
-    return render_to_response('songs/index.html', page_data)
+    return render(request, 'songs/index.html', page_data)
 
 
 def songlist(request, melding='', soort='', data=''):
@@ -83,7 +82,7 @@ def songlist(request, melding='', soort='', data=''):
             return HttpResponseRedirect("/songs/detail/{0}/".format(songslijst[0].id))
         page_data["songslijst"] = songslijst
 
-    return render_to_response('songs/songlist.html', page_data)
+    return render(request, 'songs/songlist.html', page_data)
 
 
 def series(request, melding='', item=''):
@@ -110,7 +109,7 @@ def series(request, melding='', item=''):
         page_data["serienaam"] = data.name
         page_data["songs"] = data.song.all()
         page_data["comment"] = data.comment
-    return render_to_response('songs/series.html', page_data)
+    return render(request, 'songs/series.html', page_data)
 
 
 def detail(request, melding='', action='', item="", soort='', sel=''):
@@ -178,10 +177,10 @@ def detail(request, melding='', action='', item="", soort='', sel=''):
     if action:
         page_data["auteurs"] = my.Auteur.objects.all().order_by("naam")
         page_data["makers"] = my.Maker.objects.all().order_by("naam")
-        return render_to_response('songs/wijzig.html', page_data,
-                                  context_instance=RequestContext(request))
+        page = 'songs/wijzig.html'
     else:
-        return render_to_response('songs/song.html', page_data)
+        page = 'songs/song.html'
+    return render(request, page, page_data)
 
 
 def wijzigdetail(request, melding='', item='', soort='', sel=''):
@@ -274,8 +273,7 @@ def wijzigtekst(request, melding='', action='', item='', soort='', sel=''):
     ## page_data['sel'] = sel
     page_data['id'] = item
 
-    return render_to_response('songs/wijzigsongtekst.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'songs/wijzigsongtekst.html', page_data)
 
 
 def opnlist(request, melding='', item=""):
@@ -301,7 +299,7 @@ def opnlist(request, melding='', item=""):
         page_data["title"] = "Opnames bij serie"
         page_data["serienaam"] = data.naam
         page_data["opnames"] = data.opname.all()
-    return render_to_response('songs/opnlist.html', page_data)
+    return render(request, 'songs/opnlist.html', page_data)
 
 
 def opname(request, melding='', item='', action='', soort='', sel=''):
@@ -348,8 +346,7 @@ def opname(request, melding='', item='', action='', soort='', sel=''):
     if melding:
         page_data['melding'] = melding
     # return page_data
-    return render_to_response('songs/opname.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'songs/opname.html', page_data)
 
 
 def wijzigopname(request, melding='', item='', soort='', sel=''):
@@ -444,7 +441,7 @@ def reglist(request, melding='', item=''):
         page_data["reglist"] = my.Registratie.objects.filter(type=item).order_by(
             'song__titel')
         page_data["doe"] = "Bekijk" if item == "5" else "Play"
-    return render_to_response('songs/reglist.html', page_data)
+    return render(request, 'songs/reglist.html', page_data)
 
 
 def reg(request='', melding='', item='', action='', soort='', sel=''):
@@ -479,8 +476,7 @@ def reg(request='', melding='', item='', action='', soort='', sel=''):
                                 page_data["reg"].song.titel))
     page_data["songs"] = my.Song.objects.all().order_by("titel")
     page_data["types"] = my.Regtype.objects.all()
-    return render_to_response('songs/registratie.html', page_data,
-                              context_instance=RequestContext(request))
+    return render(request, 'songs/registratie.html', page_data)
 
 
 def wijzigreg(request, melding='', item='', soort='', sel=''):
@@ -538,7 +534,7 @@ def showreg(request, melding='', item='', page=''):
     max = len(pages)
     fnam = pages[page - 1]
     page_data = {'reg': reg, 'page': page, 'fnam': fnam, 'max': max}
-    return render_to_response('songs/showreg.html', page_data)
+    return render(request, 'songs/showreg.html', page_data)
 
 
 def tabel(request, melding='', soort=''):
@@ -572,12 +568,8 @@ def tabel(request, melding='', soort=''):
         elif soort == "Regtype":
             data = my.Regtype.objects.all().order_by("naam")
         page_data["tabel"] = data
-    if soort == "Regtype":
-        return render_to_response('songs/regtype.html', page_data,
-                                  context_instance=RequestContext(request))
-    else:
-        return render_to_response('songs/tabel.html', page_data,
-                                  context_instance=RequestContext(request))
+    page = 'songs/regtype.html' if soort == "Regtype" else 'songs/tabel.html'
+    return render(request, page, page_data)
 
 
 def wijzigtabel(request, melding='', soort='', item=''):

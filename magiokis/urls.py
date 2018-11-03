@@ -1,16 +1,16 @@
 """Url configuration for Magiokis Webapps Django version
 """
-from django.conf.urls import *
+from django.conf.urls import url, include
+from . import views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     # Example:
     # url(r'^magiokis/', include('magiokis.foo.urls')),
-    url(r'^$', 'magiokis.views.index'),
+    url(r'^$', views.index),
     url(r'^denk/', include('magiokis.denk.urls')),
     url(r'^vertel/', include('magiokis.vertel.urls')),
     url(r'^songs/', include('magiokis.songs.urls')),
@@ -39,4 +39,4 @@ urlpatterns = patterns(
     #    {'document_root': '/home/albert/music/xm'}),
     # url(r'^mm/(?P<path>.*)$', 'django.views.static.serve',
     #    {'document_root': '/home/albert/music/mm'}),
-)
+]
