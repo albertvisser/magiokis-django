@@ -1,0 +1,9 @@
+{% extends "vertel/base_site.html" %}
+{% block content-data %}
+<h1>{{verhaal.titel}}</h1>
+<h2>door {{auteur}}</h2>
+{% for x in hslijst %}
+<h3>{{x.titel|default:"&nbsp;"}}</h3>
+{{x.inhoud|linebreaksbr}}
+{% endfor %}
+{% endblock %}
