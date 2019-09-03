@@ -12,8 +12,8 @@ class Trefw(models.Model):
     def __str__(self):
         return self.woord
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass
 
 
 class Denksel(models.Model):
@@ -25,5 +25,5 @@ class Denksel(models.Model):
     def __str__(self):
         return self.titel
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass

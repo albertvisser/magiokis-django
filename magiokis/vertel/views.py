@@ -65,6 +65,7 @@ def selcat(request, zoekdata="", melding=''):
     #     incoming = {}
     if incoming:
         zoekdata = incoming.get("lbSelCat", '')
+        return HttpResponseRedirect("/vertel/select/cat/{}/".format(zoekdata))
     page_data = {"message": "",
                  "crumbs": [('/', 'Home', 'Magiokis'),
                             ('/vertel/', 'start', "vertel: start")]}
@@ -79,7 +80,7 @@ def selcat(request, zoekdata="", melding=''):
                                     'kies tekst', 'vertel: selCat'))
         cat = my.Bundel.objects.get(id=zoekdata)
         page_data["items"] = my.Verhaal.objects.filter(bundel=zoekdata)
-        h = 'Geen' if len(page_data["items"]) == 0 else str(len(page_data["items"]))
+        h = str(len(page_data["items"])) if page_data["items"] else 'Geen'
         gevonden = ' '.join((h, 'verhalen gevonden bij categorie', cat.titel.join(('"', '"'))))
         page_data["nieuw"] = '/vertel/detail/nieuw/cat/%s/' % cat.id
         page_data["rubr"] = "cat"
@@ -112,7 +113,7 @@ def selzoek(request, zoekdata='', melding=''):
     if zoekdata:
         page_data["zoek"] = zoekdata
         page_data["items"] = my.Verhaal.objects.filter(titel__icontains=zoekdata)
-        h = 'Geen' if len(page_data["items"]) == 0 else str(len(page_data["items"]))
+        h = str(len(page_data["items"])) if page_data["items"] else 'Geen'
         gevonden = ' '.join((h, 'verhalen gevonden met', zoekdata.join(('"', '"')),
                              'in de titel'))
         page_data["nieuw"] = '/vertel/detail/nieuw/titel/%s/' % zoekdata
@@ -215,7 +216,7 @@ def detail(request, item=None, melding='', actie='', hstuk=None, rubr='', data='
         hslijst = h.hoofdstukken.all()
         page_data["hslijst"] = hslijst
         if item != "0":
-            if len(hslijst) == 0:
+            if not hslijst:
                 hstuk = '0'
             elif not hstuk:
                 hstuk = hslijst[0].id

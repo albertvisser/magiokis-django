@@ -13,11 +13,10 @@ class Verteller(models.Model):
     def __str__(self):
         if self.pseudoniem:
             return self.pseudoniem
-        else:
-            return ' '.join((self.voornaam, self.achternaam))
+        return ' '.join((self.voornaam, self.achternaam))
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass
 
 
 class Verhaal(models.Model):
@@ -39,8 +38,8 @@ class Verhaal(models.Model):
         ## search_fields = ['question']
         ## date_hierarchy = 'pub_date'
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass
 
 
 class Hoofdstuk(models.Model):
@@ -52,8 +51,8 @@ class Hoofdstuk(models.Model):
     def __str__(self):
         return self.titel
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass
 
 
 class Bundel(models.Model):
@@ -65,5 +64,5 @@ class Bundel(models.Model):
     def __str__(self):
         return self.titel
 
-    class Admin:
-        pass
+    # class Admin:
+    #     pass

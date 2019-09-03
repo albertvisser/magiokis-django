@@ -1,6 +1,6 @@
 """Url configuration for Magiokis Songs Django version
 """
-from django.conf.urls import include, url
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^select/regs/$', views.reglist),
     url(r'^select/regs/(?P<item>\d+)/$', views.reglist),
     url(r'^select/series/$', views.series),
+    url(r'^select/series/(?P<item>\d+)/$', views.series),
     url(r'^detail/(?P<action>add)/$', views.detail),
     url(r'^detail/(?P<item>\d+)/$', views.detail),
     url(r'^detail/(?P<item>\d+)/(?P<soort>(jaar|letter|search))/(?P<sel>(\w|\s)+)/$',
@@ -61,7 +62,4 @@ urlpatterns = [
     url(r'^tabel/(?P<soort>\w+)/(?P<item>\d+)/update/$', views.wijzigtabel),
     url(r'^tabel/(?P<soort>\w+)/add/$', views.wijzigtabel),
     # url(r'^play/(?P<type>\w+)/(?P<id>\d+)/(?P<titel>\d+)/$',        'playurl'),
-
-    # Uncomment this for admin:
-    # url(r'^admin/', include('django.contrib.admin.urls')),
 ]

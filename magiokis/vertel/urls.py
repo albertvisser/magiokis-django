@@ -1,6 +1,6 @@
 """Url configuration for Magiokis Verhalen Django version
 """
-from django.conf.urls import include, url
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -25,7 +25,4 @@ urlpatterns = [
         views.detail),
     url(r'^detail/(?P<item>\d+)/(?P<actie>(lees|wijzig|kies|nieuw))/$', views.detail),
     url(r'^detail/(?P<item>\d+)/(?P<hstuk>\d+)/(?P<actie>wijzig)/$', views.detail),
-
-    # Uncomment this for admin:
-    #     url(r'^admin/', include('django.contrib.admin.urls')),
 ]

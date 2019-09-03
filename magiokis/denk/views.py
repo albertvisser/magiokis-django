@@ -35,29 +35,32 @@ def select(request, option='', trefw=None, data=None):
         page_data["hier"] = 'alles'
         selectie = my.Denksel.objects.all()
     elif option == 'trefw':
+        if trefw is None:
+            trefw = input_dict.get("lbSelItem", '')
+            return HttpResponseRedirect('/denk/select/trefw/{}/'.format(trefw))
         page_data["crumbs"].append(('/denk/enter/trefw/', "op trefwoord",
                                     "denk: enter trefwoord"))
         page_data["crumbs"].append((request.path, "selectie",
                                     "denk: teksten bij trefwoord"))
-        if trefw is None:
-            trefw = input_dict.get("lbSelItem", '')
         data = my.Trefw.objects.get(id=trefw)
         titel = 'Overzicht bedenksels bij trefwoord "%s"' % data
         page_data["hier"] = 'trefw/%s/' % trefw
         selectie = my.Denksel.objects.filter(trefwoorden=trefw)
     elif option == 'titel':
-        page_data["crumbs"].append(('/denk/enter/titel', "op titel", "denk: zoeken in titel "))
-        page_data["crumbs"].append((request.path, "selectie", "denk: teksten op titeldeel "))
         if data is None:
             data = input_dict.get("txtInput", '')
+            return HttpResponseRedirect('/denk/select/titel/{}/'.format(data))
+        page_data["crumbs"].append(('/denk/enter/titel', "op titel", "denk: zoeken in titel "))
+        page_data["crumbs"].append((request.path, "selectie", "denk: teksten op titeldeel "))
         titel = 'Overzicht bedenksels met "%s" in titel' % data
         page_data["hier"] = 'titel/%s/' % data
         selectie = my.Denksel.objects.filter(titel__icontains=data)
     elif option == 'tekst':
-        page_data["crumbs"].append(('/denk/enter/tekst', "op tekst", "denk: zoeken in tekst"))
-        page_data["crumbs"].append((request.path, "selectie", "denk: teksten op tekstdeel"))
         if data is None:
             data = input_dict.get("txtInput", '')
+            return HttpResponseRedirect('/denk/select/tekst/{}/'.format(data))
+        page_data["crumbs"].append(('/denk/enter/tekst', "op tekst", "denk: zoeken in tekst"))
+        page_data["crumbs"].append((request.path, "selectie", "denk: teksten op tekstdeel"))
         titel = 'Overzicht bedenksels met "%s" in tekst' % data
         page_data["hier"] = 'tekst/%s/' % data
         selectie = my.Denksel.objects.filter(tekst__icontains=data)
@@ -65,7 +68,7 @@ def select(request, option='', trefw=None, data=None):
         return HttpResponse('"%(option)s" niet gedefinieerd bij "%(where)s"')
     page_data['subtitle'] = titel
     page_data['selection'] = selectie
-    if len(selectie) == 0:
+    if not selectie:
         page_data["message"] = '(Nog) geen bedenksels aanwezig'
     return render(request, 'denk/select_list.html', page_data)
 
@@ -114,8 +117,7 @@ def enter(request, option='', tekst=''):
                 ## tw = my.Trefw.objects.create(woord=nw_trefw)
                 if tekst:
                     return HttpResponseRedirect('/denk/detail/%s/ok/%s/' % (tekst, nw_trefw))
-                else:
-                    return HttpResponseRedirect('/denk/trefw/ok/%s/' % nw_trefw)
+                return HttpResponseRedirect('/denk/trefw/ok/%s/' % nw_trefw)
         else:
             page_data["crumbs"].append((request.path, "nieuw trefwoord", "denk: nieuw trefwoord"))
             page_data["next"] = '/denk/trefw/add/'

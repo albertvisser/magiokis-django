@@ -1,6 +1,5 @@
 """Web views for Magiokis Songs Django version
 """
-import string
 ## from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.http import HttpResponseRedirect  # Http404, HttpResponse
@@ -41,16 +40,7 @@ def songlist(request, melding='', soort='', data=''):
         incoming = {}
     if 'select' in incoming:
         data = incoming['select']
-        # zorgen dat 1-letter- of -cijferige titelselecties behandeld worden als letterselecties
-        if soort == 'search':
-            if data in list(string.punctuation):
-                data = "("
-                soort = "letter"
-            elif data in list(string.digits):
-                data = "0"
-                soort = "letter"
-            elif data in list(string.ascii_letters):
-                soort = 'letter'
+        return HttpResponseRedirect(request.path + data + '/')
     if soort:
         page_data["crumbs"].append(('/songs/select/%s/%s/' % (soort, data), soort,
                                     'select songs by %s' % soort))
@@ -92,6 +82,7 @@ def series(request, melding='', item=''):
         incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
+            return HttpResponseRedirect(request.path + item + '/')
     except AttributeError:
         incoming = {}
     page_data = {"message": "",
@@ -139,16 +130,16 @@ def detail(request, melding='', action='', item="", soort='', sel=''):
         page_data["song"] = song
         opnames = []
         lijst = my.Opname.objects.filter(song=song.id).order_by('datum')  # str(datum.naam))
-        for item in lijst:
-            it = {'id': item.id,
-                  'loc': ", ".join((item.plaats.naam, item.datum.naam)),
-                  'url': item.url.join(('', '.mp3'))}
-            if item.bezetting:
-                oms = item.bezetting.naam
+        for selected in lijst:
+            it = {'id': selected.id,
+                  'loc': ", ".join((selected.plaats.naam, selected.datum.naam)),
+                  'url': selected.url.join(('', '.mp3'))}
+            if selected.bezetting:
+                oms = selected.bezetting.naam
             else:
-                oms = ", ".join([ins.naam for ins in item.instrumenten.all()])
-            it['oms'] = "\n".join((oms, item.commentaar))
-            opnames.append((item.datum.waarde, it))
+                oms = ", ".join([ins.naam for ins in selected.instrumenten.all()])
+            it['oms'] = "\n".join((oms, selected.commentaar))
+            opnames.append((selected.datum.waarde, it))
         opnames.sort(key=lambda x: x[0])
         page_data["opnames"] = [x[1] for x in opnames]
         registraties = my.Registratie.objects.filter(song=song.id).order_by('type')
@@ -283,6 +274,7 @@ def opnlist(request, melding='', item=""):
         incoming = request.GET
         if 'select' in incoming:
             item = incoming['select']
+            return HttpResponseRedirect(request.path + item + '/')
     except AttributeError:
         incoming = {}
     page_data = {"message": "",

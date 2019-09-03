@@ -1,6 +1,6 @@
 ﻿"""Url configuration for Magiokis Denk Django version
 """
-from django.conf.urls import include, url
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -19,7 +19,4 @@ urlpatterns = [
     url(r'^detail/(?P<tekst>\d+)/(?P<option>ok)/(?P<trefw>(\w|\b)+)/$', views.detail),
     url(r'^detail/(?P<tekst>\d+)/(?P<seltype>\w+)/$', views.detail),
     url(r'^detail/(?P<tekst>\d+)/(?P<seltype>\w+)/(?P<seldata>\w+)/$', views.detail),
-
-    # Uncomment this for admin:
-    #     url(r'^admin/', include('django.contrib.admin.urls')),
 ]
