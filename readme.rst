@@ -10,11 +10,11 @@ However since then I updated them somewhat to keep them functioning.
 Usage
 -----
 
-Run the wsgi scripts and configure the web server to point to them.
+Run the wsgi scripts and configure the web server to point to them (see the examples).
 
 
 Requirements
 ------------
 
-Python
-Django
+- Python
+- Django
